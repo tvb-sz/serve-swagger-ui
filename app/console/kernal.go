@@ -4,11 +4,9 @@ import (
 	"context"
 	"fmt"
 	"github.com/gin-gonic/gin"
-	"github.com/jjonline/go-lib-backend/logger"
 	"github.com/tvb-sz/serve-swagger-ui/client"
 	"github.com/tvb-sz/serve-swagger-ui/conf"
 	"github.com/tvb-sz/serve-swagger-ui/route"
-	"github.com/tvb-sz/serve-swagger-ui/utils"
 	"net/http"
 	"os"
 	"os/signal"
@@ -26,9 +24,9 @@ func BootStrap() {
 	client.Logger.Info(fmt.Sprintf("MAX Cpu Num         : %d", runtime.GOMAXPROCS(-1)))
 	client.Logger.Info(fmt.Sprintf("Command Args        : %s", os.Args))
 	client.Logger.Info(fmt.Sprintf("Config file Path    : %s", conf.Config.ConfigFile))
-	client.Logger.Info(fmt.Sprintf("Enable Google login : %s", conf.Config.EnableGoogle))
+	client.Logger.Info(fmt.Sprintf("Enable Google login : %t", conf.Config.EnableGoogle))
 	client.Logger.Info(fmt.Sprintf("Server HOST         : %s", conf.Config.Server.Host))
-	client.Logger.Info(fmt.Sprintf("Server PORT         : %s", conf.Config.Server.Port))
+	client.Logger.Info(fmt.Sprintf("Server PORT         : %d", conf.Config.Server.Port))
 	client.Logger.Info(fmt.Sprintf("Swagger JSON Path   : %s", conf.Config.Swagger.Path))
 	client.Logger.Info(fmt.Sprintf("Log Path            : %s", conf.Config.Log.Path))
 	client.Logger.Info(fmt.Sprintf("Log Level           : %s", conf.Config.Log.Level))
@@ -45,11 +43,11 @@ func BootStrap() {
 // startHTTPApp http api服务启动
 func startHTTPApp(signalChan chan os.Signal) {
 	// 设置gin启动模式
-	gin.SetMode(utils.RunMode())
+	gin.SetMode(gin.DebugMode)
 
 	// 设置gin路由注册日志输出func
 	// 注意：gin路由注册日志输出仅dev模式才有
-	gin.DebugPrintRouteFunc = logger.GinPrintInitRoute
+	// gin.DebugPrintRouteFunc = logger.GinPrintInitRoute
 
 	server := &http.Server{
 		Addr:           fmt.Sprintf(":%d", conf.Config.Server.Port),

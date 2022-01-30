@@ -1,6 +1,7 @@
 package conf
 
 import (
+	"github.com/tvb-sz/serve-swagger-ui/define"
 	"github.com/tvb-sz/serve-swagger-ui/utils/cfg"
 )
 
@@ -26,7 +27,7 @@ type config struct {
 type cmdConfig struct {
 	ConfigFile         string // set config file path
 	Host               string // set web server host ip
-	Port               string // set web server ports
+	Port               int    // set web server ports
 	SwaggerPath        string // set swagger file path
 	GoogleClientID     string // set google oauth app-key
 	GoogleClientSecret string // set google oauth app-secret
@@ -43,11 +44,54 @@ func (c config) parseAfterLoad() {
 
 // Init 初始化
 func Init() {
-	// must load or panic quit
-	var cfgLoader cfg.IFace
-	cfgLoader = cfg.Viper{}
-	if err := cfgLoader.Parse(Cmd.ConfigFile, Cmd.ConfigType, &Config); err != nil {
-		panic(err)
+	// ① set framework version
+	Config.Server.Version = define.Version
+
+	// read perhaps config
+	if Cmd.ConfigFile != "" {
+		var cfgLoader cfg.IFace
+		cfgLoader = cfg.Viper{}
+		_ = cfgLoader.Parse(Cmd.ConfigFile, "toml", &Config)
+	}
+
+	// ② command line args first
+	if Cmd.Host != "" {
+		Config.Server.Host = Cmd.Host
+	}
+	if Cmd.Port != 0 {
+		Config.Server.Port = Cmd.Port
+	}
+	if Cmd.SwaggerPath != "" {
+		Config.Swagger.Path = Cmd.SwaggerPath
+	}
+	if Cmd.GoogleClientID != "" {
+		Config.Google.ClientID = Cmd.GoogleClientID
+	}
+	if Cmd.GoogleClientSecret != "" {
+		Config.Google.ClientSecret = Cmd.GoogleClientSecret
+	}
+	if Cmd.GoogleClientSecret != "" {
+		Config.Google.ClientSecret = Cmd.GoogleClientSecret
+	}
+	if Cmd.LogPath != "" {
+		Config.Log.Path = Cmd.LogPath
+	}
+	if Cmd.LogLevel != "" {
+		Config.Log.Level = Cmd.LogLevel
+	}
+
+	// ③ set default value
+	if Config.Server.Host == "" {
+		Config.Server.Host = define.DefaultHost
+	}
+	if Config.Server.Port == 0 {
+		Config.Server.Port = define.DefaultPort
+	}
+	if Config.Log.Path == "" {
+		Config.Log.Path = define.DefaultLogPath
+	}
+	if Config.Log.Level == "" {
+		Config.Log.Level = define.DefaultLogLevel
 	}
 
 	// 配置加载并解析映射成功后统一处理逻辑：譬如Url统一处理后缀斜杠

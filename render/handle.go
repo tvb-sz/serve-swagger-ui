@@ -1,18 +1,12 @@
 package render
 
 import (
-	"database/sql"
 	"encoding/json"
-	"errors"
 	"github.com/go-playground/validator/v10"
-	"github.com/go-redis/redis/v8"
 	"github.com/jjonline/go-lib-backend/logger"
-	"gorm.io/gorm"
 	"net/http"
 	"strconv"
 	"strings"
-
-	"github.com/go-sql-driver/mysql"
 
 	"github.com/gin-gonic/gin"
 )
@@ -54,11 +48,6 @@ func LogErrWithGin(ctx *gin.Context, err error, isAlert bool) {
 // translateError 默认错误翻译
 func translateError(err error) E {
 	switch e := err.(type) {
-	case *mysql.MySQLError:
-		return DbError.Wrap(e) // mysql错误
-	case redis.Error:
-		// redis错误
-		return RedisError.Wrap(err)
 	case *validator.InvalidValidationError:
 		return ErrDefineWithMsg.Wrap(err, "内部错误：参数绑定条件语法错误") // 需要修改参数结构体的tag为binding条件
 	case validator.ValidationErrors:
@@ -75,14 +64,6 @@ func translateError(err error) E {
 	case E:
 		return e
 	default:
-		// 按error类型调度判断完没有匹配，最后检查错误值本身和错误消息匹配，仍然没有匹配则返回位置错误
-		// gorm 错误仅需要翻译 gorm.ErrRecordNotFound
-		// 其他类型错误譬如：gorm.ErrMissingWhereClause是代码bug需要改代码的此处不转换
-		if errors.Is(err, gorm.ErrRecordNotFound) || errors.Is(err, sql.ErrNoRows) {
-			// gorm 数据不存在错误
-			return DbRecordNotExist.Wrap(err)
-		}
-
 		if CauseByLostConnection(err) {
 			// 各种原因丢失链接导致异常
 			return LostConnectionError.Wrap(err)
