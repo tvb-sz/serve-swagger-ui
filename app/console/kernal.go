@@ -50,7 +50,7 @@ func startHTTPApp(signalChan chan os.Signal) {
 	// gin.DebugPrintRouteFunc = logger.GinPrintInitRoute
 
 	server := &http.Server{
-		Addr:           fmt.Sprintf(":%d", conf.Config.Server.Port),
+		Addr:           fmt.Sprintf("%s:%d", conf.Config.Server.Host, conf.Config.Server.Port),
 		Handler:        route.Bootstrap(),
 		ReadTimeout:    time.Duration(conf.Config.Server.ReadTimeout) * time.Second,
 		WriteTimeout:   time.Duration(conf.Config.Server.WriteTimeout) * time.Second,

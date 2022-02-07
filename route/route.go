@@ -13,7 +13,6 @@ var router *gin.Engine
 // iniRoute 路由init-logger、recovery、cors 等
 func iniRoute() {
 	router = gin.New()
-	router.AppEngine = true // 启用AppEngine模式; nginx反代通过`X-Appengine-Remote-Addr`头透传客户端真实IP
 
 	// set base middleware
 	router.Use(logger.GinLogger(nil), logger.GinRecovery)
