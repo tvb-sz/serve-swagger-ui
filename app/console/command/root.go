@@ -12,13 +12,12 @@ import (
 // RootCmd 基于cobra的命令行根节点定义
 var (
 	RootCmd = &cobra.Command{
-		Use:   "serve-swagger-ui --path [--host --port --app-key= --app-secret=]",
+		Use:   "serve-swagger-ui --path=--Your-swagger-file-PATH-- [--host --port --log_level= --log_path=]",
 		Short: "serve-swagger-ui service manage",
-		Long: `serve-swagger-ui command example
-----------------------------------------------------------------------
-serve-swagger-ui --path=--Your-swagger-file-PATH-- [--host --port --app-key= --app-secret]
-serve-swagger-ui --config=--Your-TOML-config-file-PATH--
-----------------------------------------------------------------------`,
+		Long: `
+A swagger visual web service that can optionally be authenticated by Google,
+configured using command line parameters or a configuration file.
+The command line parameter value takes precedence and will override the value of the configuration file`,
 		Run: func(cmd *cobra.Command, args []string) {
 			console.BootStrap()
 		},
@@ -36,14 +35,12 @@ serve-swagger-ui --config=--Your-TOML-config-file-PATH--
 
 func init() {
 	// command line args
-	RootCmd.PersistentFlags().StringVar(&conf.Cmd.ConfigFile, "config", "", "指定本地配置文件")
-	RootCmd.PersistentFlags().StringVar(&conf.Cmd.Host, "host", "", "指定配置文件类型")
-	RootCmd.PersistentFlags().IntVar(&conf.Cmd.Port, "port", 0, "指定优先级高于配置文件的日志存储位置：stderr|stdout|目录路径")
-	RootCmd.PersistentFlags().StringVar(&conf.Cmd.SwaggerPath, "path", "", "指定优先级高于配置文件的日志存储位置：stderr|stdout|目录路径")
-	RootCmd.PersistentFlags().StringVar(&conf.Cmd.GoogleClientID, "client_id", "", "指定优先级高于配置文件的日志级别：debug|info|warn|error|panic|fatal")
-	RootCmd.PersistentFlags().StringVar(&conf.Cmd.GoogleClientSecret, "client_secret", "", "指定优先级高于配置文件的日志级别：debug|info|warn|error|panic|fatal")
-	RootCmd.PersistentFlags().StringVar(&conf.Cmd.LogLevel, "log_level", "", "指定优先级高于配置文件的日志级别：debug|info|warn|error|panic|fatal")
-	RootCmd.PersistentFlags().StringVar(&conf.Cmd.LogPath, "log_path", "", "指定优先级高于配置文件的日志级别：debug|info|warn|error|panic|fatal")
+	RootCmd.PersistentFlags().StringVar(&conf.Cmd.ConfigFile, "config", "", "Specify a TOML configuration file, default conf.toml")
+	RootCmd.PersistentFlags().StringVar(&conf.Cmd.Host, "host", "", "Specify the host for the web service, default 0.0.0.0")
+	RootCmd.PersistentFlags().IntVar(&conf.Cmd.Port, "port", 0, "Specify the port for the web service, default 9080")
+	RootCmd.PersistentFlags().StringVar(&conf.Cmd.SwaggerPath, "path", "", "Specify the swagger JSON file storage path")
+	RootCmd.PersistentFlags().StringVar(&conf.Cmd.LogLevel, "log_level", "", "Specify log level, override config file value：debug|info|warn|error|panic|fatal")
+	RootCmd.PersistentFlags().StringVar(&conf.Cmd.LogPath, "log_path", "", "Specify log storage location, override config file value: stderr|stdout|-dir-path-")
 }
 
 // Start 启动应用

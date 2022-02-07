@@ -5,13 +5,19 @@ ReadTimeout=30
 WriteTimeout=30
 Cors=false
 
-[Google]
-ClientID=""
-ClientSecret=""
+[Log]
+Level="debug"
+Path="stderr"
 
 [Swagger]
 Path=""
 
-[Log]
-Level="debug"
-Path="stderr"
+[Google]
+ClientID=""
+ClientSecret=""
+
+[Account]
+# Set allowed email domains, for example: Domain=["tvb.com", "tvbanywhere.com"]
+Domain=[]
+# Set allowed email address, for example: Email=["aaa@tvb.com", "bbb@tvb.com"]
+Email=[]

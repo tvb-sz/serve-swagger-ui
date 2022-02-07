@@ -43,7 +43,7 @@ func BootStrap() {
 // startHTTPApp http api服务启动
 func startHTTPApp(signalChan chan os.Signal) {
 	// 设置gin启动模式
-	gin.SetMode(gin.DebugMode)
+	gin.SetMode(gin.ReleaseMode)
 
 	// 设置gin路由注册日志输出func
 	// 注意：gin路由注册日志输出仅dev模式才有
@@ -70,11 +70,11 @@ func startHTTPApp(signalChan chan os.Signal) {
 		// We received an interrupt signal, shut down.
 		if err := server.Shutdown(timeoutCtx); err != nil {
 			// Error from closing listeners, or context timeout:
-			client.Logger.Error("Http服务暴力停止：" + err.Error())
+			client.Logger.Error("Http service violent stop：" + err.Error())
 		} else {
 			// time.Sleep(1 * time.Second)
 			// successful shutdown process ok
-			client.Logger.Info("Http服务优雅停止")
+			client.Logger.Info("Http service stops gracefully")
 		}
 
 		// closer quit chan
@@ -83,13 +83,13 @@ func startHTTPApp(signalChan chan os.Signal) {
 
 	// continue serv http service
 	if err := server.ListenAndServe(); err != nil && err != http.ErrServerClosed {
-		client.Logger.Error("Http服务异常：" + err.Error())
+		client.Logger.Error("Http service exception：" + err.Error())
 		close(idleCloser)
 	}
 
 	// wait for stop main process
 	<-idleCloser
-	client.Logger.Info("进程已退出：服务已关闭")
+	client.Logger.Info("Process exited: The service was shut down")
 }
 
 // endregion

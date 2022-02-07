@@ -19,20 +19,19 @@ type config struct {
 	Log          log     `json:"log"`     // log config
 	Google       google  `json:"google"`  // google oauth config
 	Swagger      swagger `json:"swagger"` // swagger json file config
+	Account      account `json:"account"` // google account set
 	ConfigFile   string  `json:"-"`       // record config file path
 	EnableGoogle bool    `json:"-"`       // record is set google client_id & client_secret
 }
 
 // cmdConfig command line args
 type cmdConfig struct {
-	ConfigFile         string // set config file path
-	Host               string // set web server host ip
-	Port               int    // set web server ports
-	SwaggerPath        string // set swagger file path
-	GoogleClientID     string // set google oauth app-key
-	GoogleClientSecret string // set google oauth app-secret
-	LogLevel           string // set logger level
-	LogPath            string // set logger path
+	ConfigFile  string // set config file path
+	Host        string // set web server host ip
+	Port        int    // set web server ports
+	SwaggerPath string // set swagger file path
+	LogLevel    string // set logger level
+	LogPath     string // set logger path
 }
 
 // parseAfterLoad 配置项加载完成后的统一处理流程逻辑
@@ -47,12 +46,16 @@ func Init() {
 	// ① set framework version
 	Config.Server.Version = define.Version
 
-	// read perhaps config
-	if Cmd.ConfigFile != "" {
-		var cfgLoader cfg.IFace
-		cfgLoader = cfg.Viper{}
-		_ = cfgLoader.Parse(Cmd.ConfigFile, "toml", &Config)
+	// set config file path
+	if Cmd.ConfigFile == "" {
+		Cmd.ConfigFile = define.DefaultConfig
 	}
+	Config.ConfigFile = Cmd.ConfigFile
+
+	// read config always
+	var cfgLoader cfg.IFace
+	cfgLoader = cfg.Viper{}
+	_ = cfgLoader.Parse(Cmd.ConfigFile, "toml", &Config)
 
 	// ② command line args first
 	if Cmd.Host != "" {
@@ -63,15 +66,6 @@ func Init() {
 	}
 	if Cmd.SwaggerPath != "" {
 		Config.Swagger.Path = Cmd.SwaggerPath
-	}
-	if Cmd.GoogleClientID != "" {
-		Config.Google.ClientID = Cmd.GoogleClientID
-	}
-	if Cmd.GoogleClientSecret != "" {
-		Config.Google.ClientSecret = Cmd.GoogleClientSecret
-	}
-	if Cmd.GoogleClientSecret != "" {
-		Config.Google.ClientSecret = Cmd.GoogleClientSecret
 	}
 	if Cmd.LogPath != "" {
 		Config.Log.Path = Cmd.LogPath
@@ -92,6 +86,11 @@ func Init() {
 	}
 	if Config.Log.Level == "" {
 		Config.Log.Level = define.DefaultLogLevel
+	}
+
+	// ④ set EnableGoogle value
+	if Config.Google.ClientID != "" && Config.Google.ClientSecret != "" {
+		Config.EnableGoogle = true
 	}
 
 	// 配置加载并解析映射成功后统一处理逻辑：譬如Url统一处理后缀斜杠
