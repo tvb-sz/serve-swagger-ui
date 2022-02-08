@@ -11,5 +11,5 @@ var (
 	DefaultPort     = 9080        // default port
 	DefaultConfig   = "conf.toml" // default config file path
 	DefaultLogPath  = "stdout"    // default log path
-	DefaultLogLevel = "debug"     // default log level
+	DefaultLogLevel = "error"     // default log level
 )

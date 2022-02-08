@@ -1,18 +1,25 @@
 [Server]
+# bind host ip
 Host="0.0.0.0"
+# web server bind port
 Port=9080
+# Web read and write timeout and cross-domain configuration, most use the default value
 ReadTimeout=30
 WriteTimeout=30
 Cors=false
 
 [Log]
-Level="debug"
+# log level, optional values are: panic|fatal|error|warning|info|debug|trace
+Level="error"
+# log record path, can use STD or DIR path, optional values are: stderr|stdout|file_path_only_dir
 Path="stderr"
 
 [Swagger]
+# Specify the path where the swagger JSON file is located
 Path=""
 
 [Google]
+# google oAuth login ID && secret, see: https://console.cloud.google.com/apis/credentials
 ClientID=""
 ClientSecret=""
 
