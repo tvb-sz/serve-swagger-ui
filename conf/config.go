@@ -55,7 +55,10 @@ func Init() {
 	// read config always
 	var cfgLoader cfg.IFace
 	cfgLoader = cfg.Viper{}
-	_ = cfgLoader.Parse(Cmd.ConfigFile, "toml", &Config)
+	if err := cfgLoader.Parse(Cmd.ConfigFile, "toml", &Config); err != nil {
+		// do not set config file params, reset to empty value
+		Config.ConfigFile = ""
+	}
 
 	// ② command line args first
 	if Cmd.Host != "" {
