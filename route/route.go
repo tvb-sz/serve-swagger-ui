@@ -27,5 +27,6 @@ func iniRoute() {
 // Bootstrap 引导初始化路由route
 func Bootstrap() *gin.Engine {
 	iniRoute()
+	routeSetting()
 	return router
 }

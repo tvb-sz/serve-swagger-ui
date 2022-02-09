@@ -22,6 +22,8 @@ Path=""
 # google oAuth login ID && secret, see: https://console.cloud.google.com/apis/credentials
 ClientID=""
 ClientSecret=""
+# set jwt encryption key, any character 8 to 16 characters long
+JwtKey=""
 
 [Account]
 # Set allowed email domains, for example: Domain=["tvb.com", "tvbanywhere.com"]
