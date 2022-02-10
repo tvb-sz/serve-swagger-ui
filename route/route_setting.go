@@ -4,6 +4,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/tvb-sz/serve-swagger-ui/app/controller"
 	"github.com/tvb-sz/serve-swagger-ui/stubs"
+	"html/template"
 	"net/http"
 )
 
@@ -18,6 +19,10 @@ func routeSetting() {
 		ctx.String(200, string(stubs.Favicon))
 	})
 
-	// list index route
+	// register index page, use embed html file property
+	router.SetHTMLTemplate(template.Must(template.ParseFS(stubs.Template, "./*.html")))
 	router.GET("/", controller.IndexController.Index)
+	router.GET("/index", controller.IndexController.Index)
+	router.GET("/index.html", controller.IndexController.Index)
+	router.GET("/index.htm", controller.IndexController.Index)
 }

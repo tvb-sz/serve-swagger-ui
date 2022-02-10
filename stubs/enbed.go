@@ -9,3 +9,6 @@ var Static embed.FS
 
 //go:embed favicon.ico
 var Favicon []byte
+
+//go:embed list.html detail.html
+var Template embed.FS
