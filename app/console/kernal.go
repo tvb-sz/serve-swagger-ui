@@ -62,6 +62,7 @@ func startHTTPApp(signalChan chan os.Signal) {
 
 	// http serv handle exit signal
 	go func() {
+		fmt.Printf("server-swagger-ui at: http://%s:%d\n", conf.Config.Server.Host, conf.Config.Server.Port)
 		<-signalChan
 
 		// 超时context
