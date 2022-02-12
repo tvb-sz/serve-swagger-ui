@@ -28,13 +28,18 @@ All command line arguments can be omitted
 
 ### 2、TOML config file
 
-see `conf.toml.example`
+see `stubs/conf.toml.example`
+or use sub-command `output_conf` to output all `.toml` file content
 
-copy `conf.toml.example` to `conf.toml` 
-
-placed in the same directory as the executable binary can omit `--config`
+````
+# this sub-command will output all config content
+# copy the output to create a new Configuration file for .toml suffix
+serve-swagger-ui output_conf
+````
 
 use `--config` specifies the configuration file
+
+use `conf.toml` file name and placed in the same directory as the executable binary can omit `--config`
 
 ### 3、mixed
 

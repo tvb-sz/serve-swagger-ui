@@ -12,3 +12,6 @@ var Favicon []byte
 
 //go:embed list.html detail.html
 var Template embed.FS
+
+//go:embed conf.toml.example
+var ConfExample string
