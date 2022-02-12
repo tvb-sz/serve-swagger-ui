@@ -28,4 +28,7 @@ func routeSetting() {
 
 	// serve json file
 	router.GET("/json/:path", controller.IndexController.Json)
+
+	// register detail page, use embed html file property
+	router.GET("/detail.html", controller.IndexController.Detail)
 }

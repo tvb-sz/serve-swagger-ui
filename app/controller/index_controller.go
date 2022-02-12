@@ -21,6 +21,11 @@ func (s *indexController) Index(ctx *gin.Context) {
 	ctx.HTML(http.StatusOK, "list.html", data.Items)
 }
 
+// Detail action for swagger-JSON file detail
+func (s *indexController) Detail(ctx *gin.Context) {
+	ctx.HTML(http.StatusOK, "detail.html", ctx.Query("json"))
+}
+
 // Json serve JSON file
 func (s *indexController) Json(ctx *gin.Context) {
 	hash := strings.TrimRight(ctx.Param("path"), ".json")
