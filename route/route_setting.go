@@ -25,4 +25,7 @@ func routeSetting() {
 	router.GET("/index", controller.IndexController.Index)
 	router.GET("/index.html", controller.IndexController.Index)
 	router.GET("/index.htm", controller.IndexController.Index)
+
+	// serve json file
+	router.GET("/json/:path", controller.IndexController.Json)
 }
