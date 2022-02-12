@@ -1,18 +1,238 @@
 package service
 
+import (
+	"crypto/md5"
+	"encoding/hex"
+	"encoding/json"
+	"fmt"
+	"github.com/tvb-sz/serve-swagger-ui/client"
+	"github.com/tvb-sz/serve-swagger-ui/conf"
+	"github.com/tvb-sz/serve-swagger-ui/define"
+	"github.com/tvb-sz/serve-swagger-ui/utils/memory"
+	"io/fs"
+	"os"
+	"path/filepath"
+	"strings"
+)
+
 // parseService swagger json parser service
 type parseService struct{}
 
-// Swagger parsed swagger file item
-type Swagger struct {
-	Url    string
-	Title  string
-	Desc   string
-	Author string
-	Email  string
-	Icon   string
+// swagger json file Data info
+type Data struct {
+	Items map[string][]Swagger
+	Table map[string]string
 }
 
-func (s *parseService) Parse(path string) (res []Swagger, err error) {
+// Swagger parsed swagger file item
+type Swagger struct {
+	OpenVersion string // openapi version
+	Version     string // swagger doc version
+	Title       string // swagger title
+	Desc        string // swagger desc
+	Name        string // swagger concat name
+	Email       string // swagger concat email
+	Icon        string // swagger title first letter
+	Path        string // json file path detail
+	Hash        string // json file path hash
+}
+
+// define swagger struct
+type swagger struct {
+	Openapi string `json:"openapi"` // version for openapi up 3.0
+	Swagger string `json:"swagger"` // version for below 3.x
+	Info    info   `json:"info"`
+}
+type info struct {
+	Description string  `json:"description"`
+	Version     string  `json:"version"`
+	Title       string  `json:"title"`
+	Contact     contact `json:"contact"`
+}
+type contact struct {
+	Name  string `json:"name"`
+	Email string `json:"email"`
+}
+
+// ParseWithCache with cache for parse
+func (s *parseService) ParseWithCache() (Data, error) {
+	path := conf.Config.Swagger.Path
+	data, err := memory.GetWithSetter(define.SwaggerCacheKey, func() (interface{}, error) {
+		res, err := s.Parse(path)
+		if err != nil {
+			return nil, err
+		}
+		return res, nil
+	}, 0)
+
+	if err != nil {
+		return Data{}, err
+	}
+	if res, ok := data.(Data); ok {
+		return res, nil
+	}
+	return Data{}, err
+}
+
+// CleanCache clean parsed cache for reload parse
+func (s *parseService) CleanCache() {
+	memory.Del(define.SwaggerCacheKey)
+}
+
+// Parse all swagger json files
+func (s *parseService) Parse(path string) (Data, error) {
+	// res map[string][]Swagger
+	// no sub-path as default map key
+	// sub-path as group map key
+	var res = make(map[string][]Swagger, 0)
+
+	// table map[string]string
+	// key for json file dir md5 hash
+	// value for json file dir detail
+	var table = make(map[string]string, 0)
+
+	// ① read dir collect all json file
+	path = strings.TrimRight(path, "/")
+	dir, err := os.ReadDir(path)
+	if err != nil {
+		client.Logger.Errorf("open swagger json file path %s occur error: %s", path, err.Error())
+		return Data{}, err
+	}
+
+	// ② collect all swagger json file
+	for _, target := range dir {
+		if target.IsDir() {
+			// only collect json suffix
+			subSwg := s.collectSubDir(path + "/" + target.Name())
+			if len(subSwg) > 0 {
+				if _, ok := res[target.Name()]; !ok {
+					res[target.Name()] = make([]Swagger, 0)
+				}
+				res[target.Name()] = append(res[target.Name()], subSwg...)
+			}
+		} else {
+			// only collect json suffix
+			if strings.HasSuffix(target.Name(), ".json") {
+				if result, err1 := s.parseSwagger(path + "/" + target.Name()); err1 == nil {
+					if _, ok := res["default"]; !ok {
+						res["default"] = make([]Swagger, 0)
+					}
+					res["default"] = append(res["default"], result)
+				}
+			}
+		}
+	}
+
+	// check exist swagger file
+	if len(res) <= 0 {
+		client.Logger.Error("none swagger json file found")
+		return Data{}, fmt.Errorf("none swagger json file found")
+	}
+
+	// set hashTable map
+	for _, items := range res {
+		for _, item := range items {
+			table[item.Hash] = item.Path
+		}
+	}
+
+	return Data{Items: res, Table: table}, nil
+}
+
+// collectSubDir list toml sub dir
+func (s *parseService) collectSubDir(subPath string) []Swagger {
+	res := make([]Swagger, 0)
+	_ = filepath.WalkDir(subPath, func(path string, d fs.DirEntry, err error) error {
+		// just collect .toml suffix file
+		if err == nil && !d.IsDir() {
+			if strings.HasSuffix(path, ".json") {
+				if result, err1 := s.parseSwagger(path); err1 == nil {
+					res = append(res, result)
+				}
+			}
+		}
+		return nil
+	})
+	return res
+}
+
+// parseSwagger parse swagger json file info
+func (s *parseService) parseSwagger(path string) (res Swagger, err error) {
+	var swg swagger
+	var stream []byte
+	stream, err = os.ReadFile(path)
+	if err != nil {
+		client.Logger.Errorf("open swagger json file %s occur error: %s", path, err.Error())
+		return res, err
+	}
+
+	err = json.Unmarshal(stream, &swg)
+	if err != nil {
+		client.Logger.Errorf("parse swagger json file %s occur error: %s", path, err.Error())
+		return res, err
+	}
+
+	// Openapi
+	if swg.Openapi != "" {
+		res.OpenVersion = swg.Openapi
+	}
+	if swg.Swagger != "" {
+		res.OpenVersion = swg.Swagger
+	}
+
+	// Version
+	res.Version = swg.Info.Version
+	if swg.Info.Version == "" {
+		res.Version = "no version"
+	}
+
+	// Title
+	res.Title = swg.Info.Title
+	if swg.Info.Title == "" {
+		res.Title = "no title"
+	}
+
+	// Desc
+	res.Desc = swg.Info.Description
+	if swg.Info.Description == "" {
+		res.Desc = "no description"
+	}
+
+	// Name
+	res.Name = swg.Info.Contact.Name
+	if swg.Info.Contact.Name == "" {
+		res.Name = "no name"
+	}
+
+	// Email
+	res.Email = swg.Info.Contact.Email
+	if swg.Info.Contact.Email == "" {
+		res.Email = "no email"
+	}
+
+	// Icon
+	res.Icon = s.upperIcon(res.Title)
+
+	// Hash && Path
+	res.Hash = s.md5(path)
+	res.Path = path
+
 	return
+}
+
+// upperIcon set one string to upper if possible
+func (s *parseService) upperIcon(str string) string {
+	res := strings.Split(str, "")
+	ss := []byte(res[0])
+	if len(ss) == 1 && ss[0] >= 'a' && ss[0] <= 'z' {
+		return strings.ToUpper(res[0])
+	}
+	return res[0]
+}
+
+// md5 generate md5
+func (s *parseService) md5(str string) string {
+	h := md5.New()
+	h.Write([]byte(str))
+	return hex.EncodeToString(h.Sum([]byte("")))
 }

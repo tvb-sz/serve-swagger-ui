@@ -5,6 +5,29 @@
     <title>serve-swagger-ui</title>
 </head>
 <body>
-
+<div id="app">
+    {{ range $key, $items := . }}
+        <section class="section">
+            <h2>{{$key}}</h2>
+            <ul class="items">
+                {{ range $idx, $item := $items }}
+                <li class="item">
+                    <a href="/detail.html?json=/json/{{$item.Hash}}.json">
+                        <div class="icon">
+                            <span>{{$item.Icon}}</span>
+                        </div>
+                        <div class="detail">
+                            <p>{{$item.Title}}</p>
+                            <p>API Version:{{$item.Version}} Swagger Version:{{$item.OpenVersion}}</p>
+                            <p>Concat: {{$item.Name}}({{$item.Email}})</p>
+                            <p>{{$item.Desc}}</p>
+                        </div>
+                    </a>
+                </li>
+                {{ end }}
+            </ul>
+        </section>
+    {{ end }}
+</div>
 </body>
 </html>

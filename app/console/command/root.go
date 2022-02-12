@@ -12,7 +12,7 @@ import (
 // RootCmd 基于cobra的命令行根节点定义
 var (
 	RootCmd = &cobra.Command{
-		Use:   "serve-swagger-ui --path=--Your-swagger-file-PATH-- [--host --port --log_level= --log_path=]",
+		Use:   "serve-swagger-ui",
 		Short: "serve-swagger-ui service manage",
 		Long: `
 A swagger visual web service that can optionally be authenticated by Google,
