@@ -7,9 +7,23 @@ After enabling Google oAuth login,
 you can set the domain of accounts that are allowed to view,
 or specify exactly which accounts can be used
 
-## 1、Config
+## 1、Install
 
-### 1.1、only command line arguments
+Install using go version 1.16 and above
+````
+go install github.com/tvb-sz/serve-swagger-ui@latest
+````
+
+Or, download binary file from GitHub release then install it
+1. Open [https://github.com/tvb-sz/serve-swagger-ui/releases](https://github.com/tvb-sz/serve-swagger-ui/releases)
+2. Download the latest binary executable for your OS platform type
+3. Place the binary file in the environment variable directory, or add the directory where the binary file is located to the environment variable, for example `/usr/local/bin`
+
+enjoy it~
+
+## 2、Config
+
+### 2.1、only command line arguments
 
 use `-h` see detail
 
@@ -27,7 +41,7 @@ Flags:
 
 All command line arguments can be omitted
 
-### 1.2、TOML config file
+### 2.2、TOML config file
 
 see `stubs/conf.toml.example`
 or use sub-command `output_conf` to output all `.toml` file content
@@ -45,18 +59,18 @@ use `--config` specifies the configuration file
 
 use `conf.toml` file name and placed in the same directory as the executable binary can omit `--config`
 
-### 1.3、mixed
+### 2.3、mixed
 
 Can use both configuration files and command line arguments
 
 Command line parameters take precedence, configuration file related values will be ignored
 
-## 2、Publicly accessible without authorization
+## 3、Publicly accessible without authorization
 
 only use command line arguments or do not set config file of section `[Google]`
 
 > `--open` can be used to automatically open the browser and display the first Swagger JSON file
-## 3、Authenticate with Google oAuth Login
+## 4、Authenticate with Google oAuth Login
 
 need set config file of section `[Google]` and set callback URI in google console
 
