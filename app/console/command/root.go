@@ -41,6 +41,7 @@ func init() {
 	RootCmd.PersistentFlags().StringVar(&conf.Cmd.SwaggerPath, "path", "", "Specify the swagger JSON file storage path")
 	RootCmd.PersistentFlags().StringVar(&conf.Cmd.LogLevel, "log_level", "", "Specify log level, override config file value：debug|info|warn|error|panic|fatal")
 	RootCmd.PersistentFlags().StringVar(&conf.Cmd.LogPath, "log_path", "", "Specify log storage location, override config file value: stderr|stdout|-dir-path-")
+	RootCmd.PersistentFlags().BoolVar(&conf.Cmd.OpenBrowser, "open", false, "Automatically open the browser and show the first doc, only available for public access")
 }
 
 // Start 启动应用

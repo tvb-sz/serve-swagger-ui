@@ -139,6 +139,22 @@ func (s *parseService) Parse(path string) (Data, error) {
 	return Data{Items: res, Table: table}, nil
 }
 
+// FirstDoc get the first doc hash string
+func (s *parseService) FirstDoc() (string, error) {
+	data, err := s.ParseWithCache()
+	if err != nil {
+		return "", err
+	}
+
+	// get first swagger file
+	for hash := range data.Table {
+		return hash, nil
+	}
+
+	// do not happen
+	return "", nil
+}
+
 // collectSubDir list toml sub dir
 func (s *parseService) collectSubDir(subPath string) []Swagger {
 	res := make([]Swagger, 0)

@@ -9,6 +9,7 @@ require (
 	github.com/jjonline/go-lib-backend/memory v0.0.0-20211213024656-c977de9b02d1
 	github.com/spf13/cobra v1.3.0
 	github.com/spf13/viper v1.10.1
+	github.com/toqueteos/webbrowser v1.2.0
 )
 
 require (

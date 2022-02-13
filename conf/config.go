@@ -32,6 +32,7 @@ type cmdConfig struct {
 	SwaggerPath string // set swagger file path
 	LogLevel    string // set logger level
 	LogPath     string // set logger path
+	OpenBrowser bool   // set if auto open browser
 }
 
 // parseAfterLoad 配置项加载完成后的统一处理流程逻辑

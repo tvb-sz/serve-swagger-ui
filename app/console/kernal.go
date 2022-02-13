@@ -4,6 +4,8 @@ import (
 	"context"
 	"fmt"
 	"github.com/gin-gonic/gin"
+	"github.com/toqueteos/webbrowser"
+	"github.com/tvb-sz/serve-swagger-ui/app/service"
 	"github.com/tvb-sz/serve-swagger-ui/client"
 	"github.com/tvb-sz/serve-swagger-ui/conf"
 	"github.com/tvb-sz/serve-swagger-ui/route"
@@ -62,7 +64,7 @@ func startHTTPApp(signalChan chan os.Signal) {
 
 	// http serv handle exit signal
 	go func() {
-		fmt.Printf("serve-swagger-ui at: http://%s:%d\n", conf.Config.Server.Host, conf.Config.Server.Port)
+		afterStartHTTPOk() // after http start ok, then do something
 		<-signalChan
 
 		// 超时context
@@ -91,6 +93,23 @@ func startHTTPApp(signalChan chan os.Signal) {
 	// wait for stop main process
 	<-idleCloser
 	client.Logger.Info("Process exited: The service was shut down")
+}
+
+func afterStartHTTPOk() {
+	// display serve URL
+	fmt.Printf("serve-swagger-ui at: http://%s:%d\n", conf.Config.Server.Host, conf.Config.Server.Port)
+
+	// if --open is true, open first doc auto
+	if conf.Cmd.OpenBrowser {
+		hash, err := service.ParseService.FirstDoc()
+		if err != nil {
+			panic(err)
+		}
+		visit := fmt.Sprintf("http://%s:%d/doc/%s.html", conf.Config.Server.Host, conf.Config.Server.Port, hash)
+		if err := webbrowser.Open(visit); err != nil {
+			fmt.Printf("Failed to open the browser automatically, please open it manually: %s", visit)
+		}
+	}
 }
 
 // endregion

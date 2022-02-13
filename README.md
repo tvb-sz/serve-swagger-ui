@@ -7,9 +7,9 @@ After enabling Google oAuth login,
 you can set the domain of accounts that are allowed to view,
 or specify exactly which accounts can be used
 
-## Config
+## 1、Config
 
-### 1、only command line arguments
+### 1.1、only command line arguments
 
 use `-h` see detail
 
@@ -20,13 +20,14 @@ Flags:
       --host string        Specify the host for the web service, default 0.0.0.0
       --log_level string   Specify log level, override config file value：debug|info|warn|error|panic|fatal
       --log_path string    Specify log storage location, override config file value: stderr|stdout|-dir-path-
+      --open bool          Automatically open the browser and show the first doc, only available for public access
       --path string        Specify the swagger JSON file storage path
       --port int           Specify the port for the web service, default 9080
 ````
 
 All command line arguments can be omitted
 
-### 2、TOML config file
+### 1.2、TOML config file
 
 see `stubs/conf.toml.example`
 or use sub-command `output_conf` to output all `.toml` file content
@@ -44,17 +45,18 @@ use `--config` specifies the configuration file
 
 use `conf.toml` file name and placed in the same directory as the executable binary can omit `--config`
 
-### 3、mixed
+### 1.3、mixed
 
 Can use both configuration files and command line arguments
 
 Command line parameters take precedence, configuration file related values will be ignored
 
-## Publicly accessible without authorization
+## 2、Publicly accessible without authorization
 
 only use command line arguments or do not set config file of section `[Google]`
 
-## Authenticate with Google oAuth Login
+> `--open` can be used to automatically open the browser and display the first Swagger JSON file
+## 3、Authenticate with Google oAuth Login
 
 need set config file of section `[Google]` and set callback URI in google console
 
