@@ -96,6 +96,9 @@ func startHTTPApp(signalChan chan os.Signal) {
 }
 
 func afterStartHTTPOk() {
+	// wait server error if http start failed
+	time.Sleep(300 * time.Millisecond)
+
 	// display serve URL
 	fmt.Printf("serve-swagger-ui at: http://%s:%d\n", conf.Config.Server.Host, conf.Config.Server.Port)
 
