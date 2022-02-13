@@ -2,6 +2,7 @@ package render
 
 import (
 	"encoding/json"
+	"fmt"
 	"github.com/go-playground/validator/v10"
 	"github.com/jjonline/go-lib-backend/logger"
 	"net/http"
@@ -33,6 +34,24 @@ func F(ctx *gin.Context, err error) {
 	LogErrWithGin(ctx, eErr, false)
 	res := H(eErr.Code(), eErr.Format(), nil)
 	ctx.JSON(http.StatusOK, res)
+}
+
+// HtmlFail Html错误页面输出
+func HtmlFail(ctx *gin.Context, err error) {
+	html := `<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>%s</title>
+</head>
+<body>
+<div class="app">
+<p>%s</p>
+</div>
+</body>
+</html>`
+	str := fmt.Sprintf(html, err.Error(), err.Error())
+	ctx.DataFromReader(http.StatusOK, int64(len(str)), "text/html", strings.NewReader(str), nil)
 }
 
 // LogErr 记录错误日志

@@ -35,6 +35,9 @@ or use sub-command `output_conf` to output all `.toml` file content
 # this sub-command will output all config content
 # copy the output to create a new Configuration file for .toml suffix
 serve-swagger-ui output_conf
+
+# or output to a file
+serve-swagger-ui output_conf >> conf.toml
 ````
 
 use `--config` specifies the configuration file
