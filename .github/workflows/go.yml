@@ -15,12 +15,12 @@ jobs:
 
     - name: Build binary
       run: |
-        GOOS=amd64 GOARCH=linux CGO_ENABLED=0 go build -ldflags "-s -w" -o serve-swagger-ui main.go && zip -v serve-swagger-ui-linux-amd64.zip serve-swagger-ui
-        GOOS=amd64 GOARCH=darwin CGO_ENABLED=0 go build -ldflags "-s -w" -o serve-swagger-ui main.go && zip -v serve-swagger-ui-darwin-amd64.zip serve-swagger-ui
-        GOOS=amd64 GOARCH=windows CGO_ENABLED=0 go build -ldflags "-s -w" -o serve-swagger-ui.exe main.go && zip -v serve-swagger-ui-windows-amd64.zip serve-swagger-ui.exe
-        GOOS=arm64 GOARCH=linux CGO_ENABLED=0 go build -ldflags "-s -w" -o serve-swagger-ui main.go && zip -v serve-swagger-ui-linux-arm64.zip serve-swagger-ui
-        GOOS=arm64 GOARCH=darwin CGO_ENABLED=0 go build -ldflags "-s -w" -o serve-swagger-ui main.go && zip -v serve-swagger-ui-darwin-arm64.zip serve-swagger-ui
-        GOOS=arm64 GOARCH=windows CGO_ENABLED=0 go build -ldflags "-s -w" -o serve-swagger-ui.exe main.go && zip -v serve-swagger-ui-windows-arm64.zip serve-swagger-ui.exe
-        GOOS=386 GOARCH=linux CGO_ENABLED=0 go build -ldflags "-s -w" -o serve-swagger-ui main.go && zip -v serve-swagger-ui-linux-386.zip serve-swagger-ui
-        GOOS=386 GOARCH=windows CGO_ENABLED=0 go build -ldflags "-s -w" -o serve-swagger-ui.exe main.go && zip -v serve-swagger-ui-windows-386.zip serve-swagger-ui.exe
+        GOARCH=amd64 GOOS=linux CGO_ENABLED=0 go build -ldflags "-s -w" -o serve-swagger-ui main.go && zip -v serve-swagger-ui-linux-amd64.zip serve-swagger-ui
+        GOARCH=amd64 GOOS=darwin CGO_ENABLED=0 go build -ldflags "-s -w" -o serve-swagger-ui main.go && zip -v serve-swagger-ui-darwin-amd64.zip serve-swagger-ui
+        GOARCH=amd64 GOOS=windows CGO_ENABLED=0 go build -ldflags "-s -w" -o serve-swagger-ui.exe main.go && zip -v serve-swagger-ui-windows-amd64.zip serve-swagger-ui.exe
+        GOARCH=arm64 GOOS=linux CGO_ENABLED=0 go build -ldflags "-s -w" -o serve-swagger-ui main.go && zip -v serve-swagger-ui-linux-arm64.zip serve-swagger-ui
+        GOARCH=arm64 GOOS=darwin CGO_ENABLED=0 go build -ldflags "-s -w" -o serve-swagger-ui main.go && zip -v serve-swagger-ui-darwin-arm64.zip serve-swagger-ui
+        GOARCH=arm64 GOOS=windows CGO_ENABLED=0 go build -ldflags "-s -w" -o serve-swagger-ui.exe main.go && zip -v serve-swagger-ui-windows-arm64.zip serve-swagger-ui.exe
+        GOARCH=386 GOOS=linux CGO_ENABLED=0 go build -ldflags "-s -w" -o serve-swagger-ui main.go && zip -v serve-swagger-ui-linux-386.zip serve-swagger-ui
+        GOARCH=386 GOOS=windows CGO_ENABLED=0 go build -ldflags "-s -w" -o serve-swagger-ui.exe main.go && zip -v serve-swagger-ui-windows-386.zip serve-swagger-ui.exe
 
