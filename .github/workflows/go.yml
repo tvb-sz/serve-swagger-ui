@@ -1,0 +1,36 @@
+name: Go
+
+on: [push]
+
+jobs:
+
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        include:
+          - goarch: amd64
+            goos: linux
+          - goarch: amd64
+            goos: darwin
+          - goarch: arm64
+            goos: linux
+          - goarch: arm64
+            goos: darwin
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Set up Go
+      uses: actions/setup-go@v2
+      with:
+        go-version: 1.17
+
+    - name: Build binary
+      run: CGO_ENABLED=0 go build -ldflags "-s -w" -o serve-swagger-ui-${{ matrix.goos }}-${{ matrix.goarch }} main.go
+      env:
+        GOOS: ${{ matrix.goos }}
+        GOARCH: ${{ matrix.goarch }}
+      
+    
+      
+
