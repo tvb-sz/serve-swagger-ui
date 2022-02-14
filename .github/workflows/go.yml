@@ -11,20 +11,28 @@ jobs:
         include:
           - goarch: amd64
             goos: linux
+            gobinary: serve-swagger-ui
           - goarch: amd64
             goos: darwin
+            gobinary: serve-swagger-ui
           - goarch: amd64
             goos: windows
+            gobinary: serve-swagger-ui.exe
           - goarch: arm64
             goos: linux
+            gobinary: serve-swagger-ui
           - goarch: arm64
             goos: darwin
+            gobinary: serve-swagger-ui
           - goarch: arm64
             goos: windows
+            gobinary: serve-swagger-ui.exe
           - goarch: 386
             goos: linux
+            gobinary: serve-swagger-ui
           - goarch: 386
             goos: windows
+            gobinary: serve-swagger-ui.exe
 
     steps:
     - uses: actions/checkout@v2
@@ -35,7 +43,7 @@ jobs:
         go-version: 1.17
 
     - name: Build binary
-      run: CGO_ENABLED=0 go build -ldflags "-s -w" -o serve-swagger-ui-${{ matrix.goos }}-${{ matrix.goarch }} main.go
+      run: CGO_ENABLED=0 go build -ldflags "-s -w" -o ${{ matrix.gobinary }} main.go && zip -v serve-swagger-ui-${{ matrix.goos }}-${{ matrix.goarch }}.zip ${{ matrix.gobinary }}
       env:
         GOOS: ${{ matrix.goos }}
         GOARCH: ${{ matrix.goarch }}
