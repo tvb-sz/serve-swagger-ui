@@ -1,6 +1,9 @@
 name: Go
 
-on: [push]
+on:
+  push:
+    tags:
+      - '*'
 
 jobs:
   build:
@@ -23,4 +26,13 @@ jobs:
         GOARCH=arm64 GOOS=windows CGO_ENABLED=0 go build -ldflags "-s -w" -o serve-swagger-ui.exe main.go && zip -v serve-swagger-ui-windows-arm64.zip serve-swagger-ui.exe
         GOARCH=386 GOOS=linux CGO_ENABLED=0 go build -ldflags "-s -w" -o serve-swagger-ui main.go && zip -v serve-swagger-ui-linux-386.zip serve-swagger-ui
         GOARCH=386 GOOS=windows CGO_ENABLED=0 go build -ldflags "-s -w" -o serve-swagger-ui.exe main.go && zip -v serve-swagger-ui-windows-386.zip serve-swagger-ui.exe
+        ls -l *.zip
+    - name: Auto Release
+      uses: marvinpinto/action-automatic-releases@v1.2.1
+      with:
+        repo_token: "${{ secrets.GITHUB_TOKEN }}"
+        title: "{{ github.ref_name }}"
+        prerelease: false
+        files: |
+          *.zip
 
