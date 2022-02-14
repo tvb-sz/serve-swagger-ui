@@ -3,7 +3,6 @@ name: Go
 on: [push]
 
 jobs:
-
   build:
     runs-on: ubuntu-latest
     strategy:
@@ -33,7 +32,6 @@ jobs:
           - goarch: 386
             goos: windows
             gobinary: .exe
-
     steps:
     - uses: actions/checkout@v2
 
@@ -48,11 +46,14 @@ jobs:
         GOOS: ${{ matrix.goos }}
         GOARCH: ${{ matrix.goarch }}
 
-    - name: release-please-action
-      uses: marvinpinto/action-automatic-releases@v1.2.1
+  release:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+    - uses: marvinpinto/action-automatic-releases@v1.2.1
       with:
         repo_token: "${{ secrets.GITHUB_TOKEN }}"
-        automatic_release_tag: "latest"
+        automatic_release_tag: "latest1"
         title: "Development Build"
         prerelease: false
         files: |
