@@ -10,6 +10,7 @@ import (
 	"github.com/tvb-sz/serve-swagger-ui/define"
 	"github.com/tvb-sz/serve-swagger-ui/utils/memory"
 	"io/fs"
+	"math/rand"
 	"os"
 	"path/filepath"
 	"strings"
@@ -18,7 +19,7 @@ import (
 // parseService swagger json parser service
 type parseService struct{}
 
-// swagger json file Data info
+// Data swagger json file Data info
 type Data struct {
 	Items map[string][]Swagger
 	Table map[string]string
@@ -35,6 +36,7 @@ type Swagger struct {
 	Icon        string // swagger title first letter
 	Path        string // json file path detail
 	Hash        string // json file path hash
+	Key         int    // css icon bg num
 }
 
 // define swagger struct
@@ -232,6 +234,7 @@ func (s *parseService) parseSwagger(path string) (res Swagger, err error) {
 	// Hash && Path
 	res.Hash = s.md5(path)
 	res.Path = path
+	res.Key = rand.Intn(7) // random bg Key
 
 	return
 }
