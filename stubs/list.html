@@ -178,13 +178,13 @@ a:active, a:hover {outline: 0; text-decoration: underline;}
 <div id="app">
     <header class="header">
         <div class="header_flex">
-            <div class="logo">serve-swagger-ui</div>
+            <div class="logo">{{ .siteName }}</div>
 <!--            <div class="sign">sign-in</div>-->
         </div>
     </header>
     <div class="content">
 
-        {{ range $key, $items := . }}
+        {{ range $key, $items := .items }}
         <section class="section">
             <div class="section_group"><h2>{{$key}}</h2></div>
             <ul class="items">

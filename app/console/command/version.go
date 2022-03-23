@@ -6,12 +6,12 @@ import (
 	"github.com/tvb-sz/serve-swagger-ui/conf"
 )
 
-// init version子命令
+// init version sub-command
 func init() {
 	RootCmd.AddCommand(&cobra.Command{
-		Use:   "version",           // 子命令名称
-		Short: "show version info", // 子命令简短说明
-		Long:  "show version info", // 子命令完整说明
+		Use:   "version",
+		Short: "show version info",
+		Long:  "show version info",
 		Run: func(cmd *cobra.Command, args []string) {
 			fmt.Println(conf.Config.Server.Version)
 		},

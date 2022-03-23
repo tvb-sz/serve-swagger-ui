@@ -2,10 +2,11 @@ package conf
 
 // server 环境、端口、版本、http读写超时等server级别的配置
 type server struct {
+	SiteName     string `json:"SiteName"`      // site name
 	Version      string `json:"-"`             // version
-	Host         string `json:"host"`          // 当前服务端版本
-	Port         int    `json:"port"`          // http服务绑定的端口号
-	ReadTimeout  int    `json:"read_timeout"`  // http服务读取请求最大时长
-	WriteTimeout int    `json:"write_timeout"` // http服务响应请求最大时长
-	Cors         bool   `json:"cors"`          // 是否全局添加CORS跨域header头配置，开发时无nginx代理可添加，部署时由nginx完成
+	Host         string `json:"host"`          // ip host
+	Port         int    `json:"port"`          // port
+	ReadTimeout  int    `json:"read_timeout"`  // request timeout waiting read
+	WriteTimeout int    `json:"write_timeout"` // request timeout waiting write
+	Cors         bool   `json:"cors"`          // Open or Close Cross-Origin Resource Sharing
 }

@@ -9,7 +9,7 @@ import (
 	"os"
 )
 
-// RootCmd 基于cobra的命令行根节点定义
+// RootCmd Cobra-based command line root node definition
 var (
 	RootCmd = &cobra.Command{
 		Use:   "serve-swagger-ui",
@@ -44,7 +44,7 @@ func init() {
 	RootCmd.PersistentFlags().BoolVar(&conf.Cmd.OpenBrowser, "open", false, "Automatically open the browser and show the first doc, only available for public access")
 }
 
-// Start 启动应用
+// Start start the app
 func Start() {
 	err := RootCmd.Execute()
 	if err != nil {

@@ -12,7 +12,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-// H 格式化响应
+// H format the response
 func H(code int, msg string, data interface{}) gin.H {
 	return gin.H{
 		"code": code,
@@ -21,22 +21,22 @@ func H(code int, msg string, data interface{}) gin.H {
 	}
 }
 
-// S gin成功响应
+// S gin responds successfully
 func S(ctx *gin.Context, data interface{}) {
 	res := H(SuccessCode, "ok", data)
 	ctx.JSON(http.StatusOK, res)
 }
 
-// F gin失败响应--接管错误处理
+// F gin failure response -- takes over error handling
 func F(ctx *gin.Context, err error) {
 	eErr := translateError(err)
-	// 记录错误日志
+	// log error
 	LogErrWithGin(ctx, eErr, false)
 	res := H(eErr.Code(), eErr.Format(), nil)
 	ctx.JSON(http.StatusOK, res)
 }
 
-// HtmlFail Html错误页面输出
+// HtmlFail Html error page output
 func HtmlFail(ctx *gin.Context, err error) {
 	html := `<!DOCTYPE html>
 <html lang="en">
@@ -59,12 +59,12 @@ func LogErr(err error, mark string, isAlert bool) {
 
 }
 
-// LogErrWithGin 记录错误日志
+// LogErrWithGin log error
 func LogErrWithGin(ctx *gin.Context, err error, isAlert bool) {
 	logger.GinLogHttpFail(ctx, err)
 }
 
-// translateError 默认错误翻译
+// translateError Default wrong translation
 func translateError(err error) E {
 	switch e := err.(type) {
 	case *validator.InvalidValidationError:

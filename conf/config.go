@@ -79,6 +79,9 @@ func Init() {
 	}
 
 	// ③ set default value
+	if Config.Server.SiteName != "" {
+		Config.Server.SiteName = define.DefaultSiteName
+	}
 	if Config.Server.Host == "" {
 		Config.Server.Host = define.DefaultHost
 	}

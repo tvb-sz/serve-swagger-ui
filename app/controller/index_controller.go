@@ -5,6 +5,7 @@ import (
 	"errors"
 	"github.com/gin-gonic/gin"
 	"github.com/tvb-sz/serve-swagger-ui/app/service"
+	"github.com/tvb-sz/serve-swagger-ui/conf"
 	"github.com/tvb-sz/serve-swagger-ui/render"
 	"net/http"
 	"os"
@@ -26,7 +27,13 @@ func (s *indexController) Index(ctx *gin.Context) {
 		render.HtmlFail(ctx, SwaggerPathNotFoundFile)
 		return
 	}
-	ctx.HTML(http.StatusOK, "list.html", data.Items)
+
+	// assign values
+	shares := map[string]interface{}{
+		"siteName": conf.Config.Server.SiteName, // siteName
+		"items":    data.Items,                  // swagger file list
+	}
+	ctx.HTML(http.StatusOK, "list.html", shares)
 }
 
 // Detail action for swagger-JSON file detail

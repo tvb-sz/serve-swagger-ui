@@ -1,4 +1,6 @@
 [Server]
+# Set the site name in the upper left corner of the list page
+SiteName="serve-swagger-ui"
 # bind host ip
 Host="0.0.0.0"
 # web server bind port
@@ -6,6 +8,8 @@ Port=9080
 # Web read and write timeout and cross-domain configuration, most use the default value
 ReadTimeout=30
 WriteTimeout=30
+# Open or Close Cross-Origin Resource Sharing, most use the default value
+# see: https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS
 Cors=false
 
 [Log]

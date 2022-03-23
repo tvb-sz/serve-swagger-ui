@@ -5,23 +5,22 @@ import (
 	"strings"
 )
 
-// 通用entry结构封装
+// General entry structure encapsulation
 
-// PageReq 分页通用请求参数
+// PageReq Paging general request parameters
 type PageReq struct {
-	// 通用参数--第几页
+	// General parameters--page number
 	Page int `json:"page" form:"page" binding:"omitempty"`
-
-	// 通用参数--每页数量
+	// General parameters--quantity per page
 	Limit int `json:"limit" form:"limit" binding:"omitempty,max=1000"`
 }
 
-// GetOffset 获取偏移量
+// GetOffset get offset
 func (s PageReq) GetOffset() int {
 	return (s.GetPage() - 1) * s.GetLimit()
 }
 
-// GetPage 获取页码，不能小于0
+// GetPage Get the page number, cannot be less than 0
 func (s PageReq) GetPage() int {
 	if s.Page <= 0 {
 		return 1
@@ -29,7 +28,7 @@ func (s PageReq) GetPage() int {
 	return s.Page
 }
 
-// GetLimit 获取显示条数 不能小于0 不能大于1000
+// GetLimit Get the number of displayed bars cannot be less than 0 cannot be greater than 1000
 func (s PageReq) GetLimit() int {
 	if s.Limit <= 0 {
 		return 10
@@ -40,42 +39,41 @@ func (s PageReq) GetLimit() int {
 	}
 }
 
-// SortReq 通用排序请求参数
+// SortReq Generic sort request parameters
 type SortReq struct {
-	// 通用参数--排序字段名称
+	// Common parameters--sort field name
 	OrderBy string `form:"order_by" json:"order_by"`
-	// 通用参数--排序类型<asc--升序 desc--降序>
+	// General parameters--sort type <asc--ascending desc--descending>
 	// enum:desc,asc
 	Sort string `form:"sort" json:"sort" binding:"omitempty,oneof=desc asc"`
 }
 
 // GetOrderBy 组装排序参数
 func (s SortReq) GetOrderBy() string {
-	s.OrderBy = strings.Replace(s.OrderBy, "`", "", -1) // 去除恶意的字段反引号
+	s.OrderBy = strings.Replace(s.OrderBy, "`", "", -1) // Remove malicious field backticks
 	if s.OrderBy != "" && s.Sort != "" {
 		return fmt.Sprintf("`%s` %s", s.OrderBy, s.Sort)
 	}
 	return "`id` desc"
 }
 
-// PageRes 分页响应数据
+// PageRes paginated response data
 type PageRes struct {
-	// 总数 全量返回或者不需要数量得情况返回0
+	// The total number is returned in full or 0 is returned if the number is not required
 	Total int64 `json:"total"`
-	// 列表数据
+	// list data
 	List interface{} `json:"list"`
 }
 
-// NumRes 返回一个数字
+// NumRes return a number
 type NumRes struct {
 	Num int64 `json:"num"`
 }
 
-// BaseRes 基本响应
+// BaseRes Basic response structure
 type BaseRes struct {
-	// 错误码 0成功 非0失败
+	// Error code ZERO success, non-ZERO failure
 	Code int64 `json:"code"`
-
-	// 错误码对应的错误信息
+	// Error message corresponding to the error code
 	Msg string `json:"msg"`
 }

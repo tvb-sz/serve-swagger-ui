@@ -17,9 +17,9 @@ import (
 	"time"
 )
 
-// region 服务引导启动器
+// region Service Boot Launcher
 
-// BootStrap 引导启动
+// BootStrap boot
 func BootStrap() {
 	// output base info
 	client.Logger.Info(fmt.Sprintf("Golang Version      : %s", runtime.Version()))
@@ -44,12 +44,8 @@ func BootStrap() {
 
 // startHTTPApp http api服务启动
 func startHTTPApp(signalChan chan os.Signal) {
-	// 设置gin启动模式
+	// Set gin startup mode
 	gin.SetMode(gin.ReleaseMode)
-
-	// 设置gin路由注册日志输出func
-	// 注意：gin路由注册日志输出仅dev模式才有
-	// gin.DebugPrintRouteFunc = logger.GinPrintInitRoute
 
 	server := &http.Server{
 		Addr:           fmt.Sprintf("%s:%d", conf.Config.Server.Host, conf.Config.Server.Port),
@@ -59,7 +55,7 @@ func startHTTPApp(signalChan chan os.Signal) {
 		MaxHeaderBytes: 1 << 20, //1MB
 	}
 
-	// main主进程阻塞channel
+	// The main process blocks the channel
 	idleCloser := make(chan struct{})
 
 	// http serv handle exit signal
@@ -117,9 +113,9 @@ func afterStartHTTPOk() {
 
 // endregion
 
-// region 全局进程控制信号捕获
+// region Global process control signal capture
 
-// quitCtx 全局退出信号
+// quitCtx global exit signal
 func quitCtx() (context.Context, chan os.Signal) {
 	ctx, cancel := context.WithCancel(context.Background())
 	quitChan := make(chan os.Signal)
