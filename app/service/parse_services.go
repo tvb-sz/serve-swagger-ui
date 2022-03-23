@@ -161,7 +161,7 @@ func (s *parseService) FirstDoc() (string, error) {
 func (s *parseService) collectSubDir(subPath string) []Swagger {
 	res := make([]Swagger, 0)
 	_ = filepath.WalkDir(subPath, func(path string, d fs.DirEntry, err error) error {
-		// just collect .toml suffix file
+		// just collect .json suffix file
 		if err == nil && !d.IsDir() {
 			if strings.HasSuffix(path, ".json") {
 				if result, err1 := s.parseSwagger(path); err1 == nil {
@@ -201,7 +201,7 @@ func (s *parseService) parseSwagger(path string) (res Swagger, err error) {
 	// Version
 	res.Version = swg.Info.Version
 	if swg.Info.Version == "" {
-		res.Version = "No Version"
+		res.Version = "None Version"
 	}
 
 	// Title

@@ -91,7 +91,7 @@ a:active, a:hover {outline: 0; text-decoration: underline;}
     border-bottom: 1px solid #eee;
 }
 .item {
-    padding: 12px 150px 12px 60px;
+    padding: 12px 200px 12px 60px;
     border-top: 1px solid #eee;
 }
 .item .icon {
@@ -126,14 +126,14 @@ a:active, a:hover {outline: 0; text-decoration: underline;}
 .item .detail_left {}
 .item .detail_right {
     position: absolute;
-    right: -145px;
+    right: -185px;
     top : 15px;
     color: #888888;
     font-size: 0.5rem;
 }
 .item .detail_left .detail_line_one {
-    height: 1.38rem;
-    line-height: 1.38rem;
+    height: 1.41rem;
+    line-height: 1.41rem;
     overflow: hidden;
     margin-top: 0.1rem;
 }
@@ -157,11 +157,6 @@ a:active, a:hover {outline: 0; text-decoration: underline;}
     border: 1px solid #dbdbdb;
     border-radius: 100px;
     font-weight: 400;
-}
-.item .detail .detail_line_one .oa_version span {
-    background-color: #89bf04;
-    color: #ffffff;
-    border: none;
 }
 .item .detail_left .detail_line_two {
     padding: 0.1rem 0 0 0;
@@ -197,8 +192,8 @@ a:active, a:hover {outline: 0; text-decoration: underline;}
                         <div class="detail_left">
                             <div class="detail_line_one">
                                 <h3><a href="/doc/{{$item.Hash}}.html" target="_blank">{{$item.Title}}</a></h3>
-                                <div class="version api_version"><span>v{{$item.Version}}</span></div>
-                                <div class="version oa_version"><span>OAS{{$item.OpenVersion}}</span></div>
+                                <div class="version"><span>v{{$item.Version}}</span></div>
+                                <div class="version"><span>OAS{{$item.OpenVersion}}</span></div>
                             </div>
                             <div class="detail_line_two"><p>{{$item.Desc}}</p></div>
                         </div>
