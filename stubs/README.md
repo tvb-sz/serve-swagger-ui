@@ -11,4 +11,4 @@ For the specific version number used,
 please refer to the commit.
 
 The final compiled binary already contains these static files,
-just a binary and an optional configuration file are needed
+just one binary file are needed

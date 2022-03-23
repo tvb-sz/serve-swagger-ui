@@ -15,8 +15,8 @@ import (
 type indexController struct{}
 
 var (
-	SwaggerPathNotFoundFile = errors.New("The swagger JSON file was not found at the specified path")
-	SwaggerFileNotExist     = errors.New("The swagger file does not exist")
+	SwaggerPathNotFoundFile = errors.New("the swagger JSON file was not found at the specified path")
+	SwaggerFileNotExist     = errors.New("the swagger file does not exist")
 )
 
 // Index action for list all swagger-JSON file list
