@@ -201,31 +201,31 @@ func (s *parseService) parseSwagger(path string) (res Swagger, err error) {
 	// Version
 	res.Version = swg.Info.Version
 	if swg.Info.Version == "" {
-		res.Version = "no version"
+		res.Version = "No Version"
 	}
 
 	// Title
 	res.Title = swg.Info.Title
 	if swg.Info.Title == "" {
-		res.Title = "no title"
+		res.Title = "None Title"
 	}
 
 	// Desc
 	res.Desc = swg.Info.Description
 	if swg.Info.Description == "" {
-		res.Desc = "no description"
+		res.Desc = "None description"
 	}
 
 	// Name
 	res.Name = swg.Info.Contact.Name
 	if swg.Info.Contact.Name == "" {
-		res.Name = "no name"
+		res.Name = "None Author"
 	}
 
 	// Email
 	res.Email = swg.Info.Contact.Email
 	if swg.Info.Contact.Email == "" {
-		res.Email = "no email"
+		res.Email = "None Email"
 	}
 
 	// Icon

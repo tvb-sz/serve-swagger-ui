@@ -191,12 +191,12 @@ a:active, a:hover {outline: 0; text-decoration: underline;}
                 {{ range $idx, $item := $items }}
                 <li class="item">
                     <div class="icon">
-                        <a href="/doc/{{$item.Hash}}.html"><span class="bg{{$item.Key}}">{{$item.Icon}}</span></a>
+                        <a href="/doc/{{$item.Hash}}.html" target="_blank"><span class="bg{{$item.Key}}">{{$item.Icon}}</span></a>
                     </div>
                     <div class="detail">
                         <div class="detail_left">
                             <div class="detail_line_one">
-                                <h3><a href="/doc/{{$item.Hash}}.html">{{$item.Title}}</a></h3>
+                                <h3><a href="/doc/{{$item.Hash}}.html" target="_blank">{{$item.Title}}</a></h3>
                                 <div class="version api_version"><span>v{{$item.Version}}</span></div>
                                 <div class="version oa_version"><span>OAS{{$item.OpenVersion}}</span></div>
                             </div>
