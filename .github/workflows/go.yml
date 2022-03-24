@@ -18,7 +18,7 @@ jobs:
 
     - name: Build binary
       run: |
-        sed -i "" "s/Version.*\"/Version = \"`echo ${{ github.ref_name }} | sed -e "s/^v//"`\"/g" ./define/default_vars.go
+        sed -i "s/Version.*\"/Version = \"`echo ${{ github.ref_name }} | sed -e "s/^v//"`\"/g" ./define/default_vars.go
         GOARCH=amd64 GOOS=linux CGO_ENABLED=0 go build -ldflags "-s -w" -o serve-swagger-ui main.go && zip -v serve-swagger-ui-linux-amd64.zip serve-swagger-ui
         GOARCH=amd64 GOOS=darwin CGO_ENABLED=0 go build -ldflags "-s -w" -o serve-swagger-ui main.go && zip -v serve-swagger-ui-darwin-amd64.zip serve-swagger-ui
         GOARCH=amd64 GOOS=windows CGO_ENABLED=0 go build -ldflags "-s -w" -o serve-swagger-ui.exe main.go && zip -v serve-swagger-ui-windows-amd64.zip serve-swagger-ui.exe
