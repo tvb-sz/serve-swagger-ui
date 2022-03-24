@@ -1,6 +1,11 @@
 [Server]
 # Set the site name in the upper left corner of the list page
 SiteName="serve-swagger-ui"
+# Set server bind domain base URL
+# If you use oauth login, please set it correctly
+BaseURL="http://localhost:9080"
+# set jwt encryption key, any character 8 to 16 characters long, for frontend authentication cookie encryption
+JwtKey=""
 # bind host ip
 # If the startup command parameter --host is specified, this config value will be ignored
 Host="0.0.0.0"

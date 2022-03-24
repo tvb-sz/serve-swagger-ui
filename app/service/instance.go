@@ -6,4 +6,5 @@ package service
 //   ③ 结构体的实例变量和结构体类型仅首字母大小写不一样[变量可导出，类型不可导出]
 var (
 	ParseService = &parseService{}
+	OauthService = &oauthService{}
 )

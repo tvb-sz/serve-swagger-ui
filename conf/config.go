@@ -3,6 +3,7 @@ package conf
 import (
 	"github.com/tvb-sz/serve-swagger-ui/define"
 	"github.com/tvb-sz/serve-swagger-ui/utils/cfg"
+	"strings"
 )
 
 // 项目config配置定义
@@ -35,9 +36,18 @@ type cmdConfig struct {
 	OpenBrowser bool   // set if auto open browser
 }
 
-// parseAfterLoad 配置项加载完成后的统一处理流程逻辑
+// parseAfterLoad Unified processing flow logic after the configuration item is loaded
 func (c config) parseAfterLoad() {
+	// if google oauth is enabled, check needed JwtKey
+	if Config.EnableGoogle && Config.Server.JwtKey == "" {
+		panic("Enable authentication must be set Server.JwtKey")
+	}
 
+	// parse BaseURL suffix slash, add corrected slash
+	// Make sure the config ends up being slashed with or without a trailing slash
+	if Config.Server.BaseURL != "" {
+		Config.Server.BaseURL = strings.TrimRight(Config.Server.BaseURL, "/") + "/"
+	}
 }
 
 // region 初始化
