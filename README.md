@@ -82,8 +82,8 @@ you will get the Google oauth client_id and client_secret
 
 edit your `.toml` suffix config file, see: [2.2、TOML config file](#22toml-config-file)
 
-1. set `Server.BaseURL` which is your server bind domain base URL, such as `https://swg.com/`
-2. set `Server.JwtKey` which is the jwt encryption key used to authenticate the cookie
+1. set `Server.BaseURL` which is your server bind domain base URL, such as `https://swagger.tvb.com/`
+2. set `Server.JwtKey` which is the jwt encryption key used to authenticate the cookie, any character 8 to 16 characters long
 3. set `Server.JwtExpiredTime` which is Authorization token validity period, how many seconds after the token is issued
 4. set `Google.ClientID` and `Google.ClientSecret` obtained in the first step
 
@@ -91,13 +91,13 @@ edit your `.toml` suffix config file, see: [2.2、TOML config file](#22toml-conf
 
 set your oauth callback URL in Google oauth console, see: [https://console.cloud.google.com/apis/credentials](https://console.cloud.google.com/apis/credentials)
 
-The callback URL splicing format is: `Server.BaseURL` + `callback/google`,  such as `https://swg.com/callback/google`
+The callback URL splicing format is: `Server.BaseURL` + `callback/google`,  such as `https://swagger.tvb.com/callback/google`
 
 ### step4、set allowed login email address or email address domain 
 
 use `Account.Domain` set up authoritative domains,
 All email address under the set domain can be authorized, 
-such as `tvb.com`, then all email address with suffix used `tvb.com` can log in
+such as `swg.com`, then all email address with suffix used `tvb.com` can log in
 
 > You can set multiple domain, so you need to use an array of square brackets
 
