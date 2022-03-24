@@ -97,7 +97,7 @@ The callback URL splicing format is: `Server.BaseURL` + `callback/google`,  such
 
 use `Account.Domain` set up authoritative domains,
 All email address under the set domain can be authorized, 
-such as `swg.com`, then all email address with suffix used `tvb.com` can log in
+such as `tvb.com`, then all email address with suffix used `tvb.com` can log in
 
 > You can set multiple domain, so you need to use an array of square brackets
 
