@@ -1,20 +1,28 @@
 [Server]
 # Set the site name in the upper left corner of the list page
 SiteName="serve-swagger-ui"
+
 # Set server bind domain base URL
 # If you use oauth login, please set it correctly
 BaseURL="http://localhost:9080"
-# set jwt encryption key, any character 8 to 16 characters long, for frontend authentication cookie encryption
+
+# set jwt encryption key, any character 8 to 16 characters long
+# must be set when enable oauth login
+# used for frontend authentication cookie encryption key
 JwtKey=""
+
 # bind host ip
 # If the startup command parameter --host is specified, this config value will be ignored
 Host="0.0.0.0"
+
 # web server bind port
 # If the startup command parameter --port is specified, this config value will be ignored
 Port=9080
+
 # Web read and write timeout and, most use the default value
 ReadTimeout=30
 WriteTimeout=30
+
 # Open or Close Cross-Origin Resource Sharing, most use the default value
 # see: https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS
 Cors=false
@@ -23,6 +31,7 @@ Cors=false
 # log level, optional values are: panic|fatal|error|warning|info|debug|trace
 # If the startup command parameter --log_level is specified, this config value will be ignored
 Level="error"
+
 # log record path, can use STD or DIR path, optional values are: stderr|stdout|file_path_only_dir
 # If the startup command parameter --log_path is specified, this config value will be ignored
 Path="stderr"
@@ -52,9 +61,6 @@ Path="./runtime"
 # google oAuth login ID && secret, see: https://console.cloud.google.com/apis/credentials
 ClientID=""
 ClientSecret=""
-# set jwt encryption key, any character 8 to 16 characters long
-# used for frontend authentication cookie encryption key
-JwtKey=""
 
 [Account]
 # Set allowed the domain of email addresses
@@ -62,6 +68,7 @@ JwtKey=""
 # Then all email address with tvb.com and tvb.hk as the domain name suffix are allowed to log in
 # Domain and Email can be set to take effect at the same time
 Domain=[]
+
 # Set allowed email address, for example: Email=["aaa@tvb.com", "bbb@tvb.com"]
 # Set the full email address to allow logins
 # Email and Domain can be set to take effect at the same time
