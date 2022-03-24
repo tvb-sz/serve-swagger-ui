@@ -39,8 +39,8 @@ type cmdConfig struct {
 // parseAfterLoad Unified processing flow logic after the configuration item is loaded
 func (c config) parseAfterLoad() {
 	// if google oauth is enabled, check needed JwtKey
-	if Config.EnableGoogle && Config.Server.JwtKey == "" {
-		panic("Enable authentication must be set Server.JwtKey")
+	if Config.EnableGoogle && (Config.Server.JwtKey == "" || Config.Server.JwtExpiredTime <= 0) {
+		panic("Enable authentication must be set Server.JwtKey and Server.JwtExpiredTime")
 	}
 
 	// parse BaseURL suffix slash, add corrected slash

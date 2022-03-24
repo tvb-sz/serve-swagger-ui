@@ -7,9 +7,14 @@ SiteName="serve-swagger-ui"
 BaseURL="http://localhost:9080"
 
 # set jwt encryption key, any character 8 to 16 characters long
-# must be set when enable oauth login
 # used for frontend authentication cookie encryption key
+# must be set when enable oauth login
 JwtKey=""
+
+# set the expiration time of the oauth login
+# please set a number in seconds, default one year
+# must be set when enable oauth login
+JwtExpiredTime=31536000
 
 # bind host ip
 # If the startup command parameter --host is specified, this config value will be ignored
@@ -59,6 +64,10 @@ Path="./runtime"
 
 [Google]
 # google oAuth login ID && secret, see: https://console.cloud.google.com/apis/credentials
+# callback URL base path is: /callback/google
+# the full URL using Server.BaseURL splicing base path
+# - if your Server.BaseURL is: http://localhost:9080
+# - then the full callback URL set in Google oauth console is: http://localhost:9080/callback/google
 ClientID=""
 ClientSecret=""
 

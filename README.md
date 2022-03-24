@@ -72,11 +72,36 @@ only use command line arguments or do not set config file of section `[Google]`
 > `--open` can be used to automatically open the browser and display the first Swagger JSON file
 ## 4、Authenticate with Google oAuth Login
 
-need set config file of section `[Google]` and set callback URI in google console
+### step1、create Google oauth web application
 
-> attention set callback URI in google oAuth setting
+create Web Application in Google console, see: [https://console.cloud.google.com/apis/credentials](https://console.cloud.google.com/apis/credentials)
 
-use `[Account.Domain]` set up authoritative domains,
-All email address under the set domain can be authorized
+you will get the Google oauth client_id and client_secret
 
-use `[Account.Email]` specify one or more email addresses that can be authorized
+### step2、set config
+
+edit your `.toml` suffix config file, see: [2.2、TOML config file](#22toml-config-file)
+
+1. set `Server.BaseURL` which is your server bind domain base URL, such as `https://swg.com/`
+2. set `Server.JwtKey` which is the jwt encryption key used to authenticate the cookie
+3. set `Server.JwtExpiredTime` which is Authorization token validity period, how many seconds after the token is issued
+4. set `Google.ClientID` and `Google.ClientSecret` obtained in the first step
+
+### step3、set callback URL in Google console
+
+set your oauth callback URL in Google oauth console, see: [https://console.cloud.google.com/apis/credentials](https://console.cloud.google.com/apis/credentials)
+
+The callback URL splicing format is: `Server.BaseURL` + `callback/google`,  such as `https://swg.com/callback/google`
+
+### step4、set allowed login email address or email address domain 
+
+use `Account.Domain` set up authoritative domains,
+All email address under the set domain can be authorized, 
+such as `tvb.com`, then all email address with suffix used `tvb.com` can log in
+
+> You can set multiple domain, so you need to use an array of square brackets
+
+use `Account.Email` specify one or more email addresses that can be authorized
+such as `webmaster@tvb.com`, then `webmaster@tvb.com` full match email address can log in
+
+> You can set multiple email address, so you need to use an array of square brackets
