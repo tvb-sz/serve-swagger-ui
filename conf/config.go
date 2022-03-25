@@ -43,6 +43,11 @@ func (c config) parseAfterLoad() {
 		panic("Enable authentication must be set Server.JwtKey and Server.JwtExpiredTime")
 	}
 
+	// swagger path must be set
+	if Config.Swagger.Path == "" {
+		panic("swagger file located path --path or Swagger.path must be set")
+	}
+
 	// parse BaseURL suffix slash, add corrected slash
 	// Make sure the config ends up being slashed with or without a trailing slash
 	if Config.Server.BaseURL != "" {

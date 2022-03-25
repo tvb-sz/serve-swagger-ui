@@ -5,6 +5,7 @@ import (
 	"encoding/hex"
 	"encoding/json"
 	"fmt"
+	"github.com/fsnotify/fsnotify"
 	"github.com/tvb-sz/serve-swagger-ui/client"
 	"github.com/tvb-sz/serve-swagger-ui/conf"
 	"github.com/tvb-sz/serve-swagger-ui/define"
@@ -13,8 +14,12 @@ import (
 	"math/rand"
 	"os"
 	"path/filepath"
+	"sort"
 	"strings"
 )
+
+// watch path list
+var watchPath = make([]string, 0)
 
 // parseService swagger json parser service
 type parseService struct{}
@@ -60,7 +65,7 @@ type contact struct {
 func (s *parseService) ParseWithCache() (Data, error) {
 	path := conf.Config.Swagger.Path
 	data, err := memory.GetWithSetter(define.SwaggerCacheKey, func() (interface{}, error) {
-		res, err := s.Parse(path)
+		res, err := s.parse(path)
 		if err != nil {
 			return nil, err
 		}
@@ -81,8 +86,111 @@ func (s *parseService) CleanCache() {
 	memory.Del(define.SwaggerCacheKey)
 }
 
-// Parse all swagger json files
-func (s *parseService) Parse(path string) (Data, error) {
+// FirstDoc get the first doc hash string
+func (s *parseService) FirstDoc() (string, error) {
+	data, err := s.ParseWithCache()
+	if err != nil {
+		return "", err
+	}
+
+	// get first swagger file
+	for hash := range data.Table {
+		return hash, nil
+	}
+
+	// do not happen
+	return "", nil
+}
+
+// StartFileWatcher use goroutine watch swagger file changed then clean parsed cache
+func (s *parseService) StartFileWatcher() {
+	// collect init needed watch dir
+	watchPath = s.collectWatchDir(conf.Config.Swagger.Path)
+
+	// define watch func
+	var addWatch = func(pathItems []string, watcher *fsnotify.Watcher) {
+		for _, path := range pathItems {
+			_ = watcher.Add(path)
+		}
+	}
+	var removeWatch = func(pathItems []string, watcher *fsnotify.Watcher) {
+		for _, path := range pathItems {
+			_ = watcher.Remove(path)
+		}
+	}
+
+	watcher, err := fsnotify.NewWatcher()
+	defer watcher.Close()
+	if err != nil {
+		panic(err)
+	}
+
+	// init watch
+	addWatch(watchPath, watcher)
+
+	for {
+		select {
+		case event, ok := <-watcher.Events:
+			if ok {
+				client.Logger.Infof("recognize %s changed, auto reread", event.Name)
+				// check watch path is changed or not
+				newWatchPath := s.collectWatchDir(conf.Config.Swagger.Path)
+				if s.isWatchDirChanged(watchPath, newWatchPath) {
+					client.Logger.Info("subdirectory was changed, auto reinitialize watcher")
+					removeWatch(watchPath, watcher)
+					addWatch(newWatchPath, watcher)
+					watchPath = newWatchPath // assign new watch path to old
+				}
+
+				// when file change, just clear parsed cache, new cache will auto make when a new http request come
+				s.CleanCache()
+			}
+		case <-watcher.Errors:
+			// no code
+		}
+	}
+}
+
+// isWatchDirChanged check if watch path dir is change
+func (s *parseService) isWatchDirChanged(prev, next []string) bool {
+	if len(prev) != len(next) {
+		return true
+	}
+
+	if (prev == nil) != (next == nil) {
+		return true
+	}
+
+	// this line can ensure the next b[i] never out of index in for...range loop
+	next = next[:len(prev)]
+	for i, v := range prev {
+		if v != next[i] {
+			return true
+		}
+	}
+
+	return false
+}
+
+// collectWatchDir collect need watch path list
+func (s *parseService) collectWatchDir(parent string) []string {
+	var patCollect = make([]string, 0)
+	_ = filepath.WalkDir(parent, func(path string, d fs.DirEntry, err error) error {
+		// collect Dir path
+		if err == nil && d.IsDir() {
+			patCollect = append(patCollect, path)
+		}
+		return nil
+	})
+
+	// 执行一遍排序
+	sort.Strings(patCollect)
+
+	return patCollect
+}
+
+// parse all swagger json files
+func (s *parseService) parse(path string) (Data, error) {
 	// res map[string][]Swagger
 	// no sub-path as default map key
 	// sub-path as group map key
@@ -139,22 +247,6 @@ func (s *parseService) Parse(path string) (Data, error) {
 	}
 
 	return Data{Items: res, Table: table}, nil
-}
-
-// FirstDoc get the first doc hash string
-func (s *parseService) FirstDoc() (string, error) {
-	data, err := s.ParseWithCache()
-	if err != nil {
-		return "", err
-	}
-
-	// get first swagger file
-	for hash := range data.Table {
-		return hash, nil
-	}
-
-	// do not happen
-	return "", nil
 }
 
 // collectSubDir list toml sub dir

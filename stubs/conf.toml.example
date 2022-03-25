@@ -50,16 +50,16 @@ Path="stderr"
 # for example:
 #
 # ├── runtime
-# │   ├── Gs
+# │   ├── Defined
 # │   │   ├── 1.json
 # │   │   └── sub
 # │   │        └── 2.json
 # │   ├── 3.json
 # │   └── 4.json
 # 
-# three will be TWO group:
-#   default : contain 1.json and 2.json
-#   Gs      : contain 3.json and 4.json
+# there will be TWO group:
+#   Defined : contain 1.json and 2.json
+#   default : contain 3.json and 4.json
 Path="./runtime"
 
 [Google]

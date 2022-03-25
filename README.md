@@ -23,7 +23,7 @@ enjoy it~
 
 ## 2、Config
 
-### 2.1、only command line arguments
+#### 2.1、only command line arguments
 
 use `-h` see detail
 
@@ -39,9 +39,11 @@ Flags:
       --port int           Specify the port for the web service, default 9080
 ````
 
+> `--open` can be used to automatically open the default browser and display the first Swagger JSON file
+
 All command line arguments can be omitted
 
-### 2.2、TOML config file
+#### 2.2、TOML config file
 
 see `stubs/conf.toml.example`
 or use sub-command `output_conf` to output all `.toml` file content
@@ -59,41 +61,40 @@ use `--config` specifies the configuration file
 
 use `conf.toml` file name and placed in the same directory as the executable binary can omit `--config`
 
-### 2.3、mixed
+#### 2.3、mixed
 
 Can use both configuration files and command line arguments
 
 Command line parameters take precedence, configuration file related values will be ignored
 
-## 3、Publicly accessible without authorization
+## 3、Publicly accessible
 
 only use command line arguments or do not set config file of section `[Google]`
 
-> `--open` can be used to automatically open the browser and display the first Swagger JSON file
 ## 4、Authenticate with Google oAuth Login
 
-### step1、create Google oauth web application
+#### step1、create Google oauth web application
 
 create Web Application in Google console, see: [https://console.cloud.google.com/apis/credentials](https://console.cloud.google.com/apis/credentials)
 
 you will get the Google oauth client_id and client_secret
 
-### step2、set config
+#### step2、set config
 
 edit your `.toml` suffix config file, see: [2.2、TOML config file](#22toml-config-file)
 
 1. set `Server.BaseURL` which is your server bind domain base URL, such as `https://swagger.tvb.com/`
-2. set `Server.JwtKey` which is the jwt encryption key used to authenticate the cookie, any character 8 to 16 characters long
-3. set `Server.JwtExpiredTime` which is Authorization token validity period, how many seconds after the token is issued
+2. set `Server.JwtKey` which is the JWT encryption key used to authenticate the cookie, any character 8 to 16 characters long
+3. set `Server.JwtExpiredTime` which is Authorization cookie validity period, how many seconds after the token is issued
 4. set `Google.ClientID` and `Google.ClientSecret` obtained in the first step
 
-### step3、set callback URL in Google console
+#### step3、set callback URL in Google console
 
 set your oauth callback URL in Google oauth console, see: [https://console.cloud.google.com/apis/credentials](https://console.cloud.google.com/apis/credentials)
 
 The callback URL splicing format is: `Server.BaseURL` + `callback/google`,  such as `https://swagger.tvb.com/callback/google`
 
-### step4、set allowed login email address or email address domain 
+#### step4、set allowed login email address or email address domain 
 
 use `Account.Domain` set up authoritative domains,
 All email address under the set domain can be authorized, 
@@ -105,3 +106,28 @@ use `Account.Email` specify one or more email addresses that can be authorized
 such as `webmaster@tvb.com`, then `webmaster@tvb.com` full match email address can log in
 
 > You can set multiple email address, so you need to use an array of square brackets
+
+## 5、Serve multiple swagger JSON files
+
+> Thanks to [fsnotify](https://github.com/fsnotify/fsnotify), adding or removing swagger json file does not require restarting the process
+
+use `--path` or `Swagger.Path` Specify the directory path where the swagger JSON files is located
+
+You can use a subdirectory to group multiple swagger JSON files.
+
+The first-level subdirectory name will be automatically used as a group name
+and those without a first-level subdirectory will be as the use `default` as group name.
+
+**For example:**
+````
+ ├── runtime
+ │   ├── Defined
+ │   │   ├── 1.json
+ │   │   └── sub
+ │   │        └── 2.json
+ │   ├── 3.json
+ │   └── 4.json
+````
+there will be TWO group:
+1. `Defined` : contain `1.json` and `2.json`
+2. `default` : contain `3.json` and `4.json`

@@ -58,6 +58,9 @@ func startHTTPApp(signalChan chan os.Signal) {
 	// The main process blocks the channel
 	idleCloser := make(chan struct{})
 
+	// start file change watcher
+	go service.ParseService.StartFileWatcher()
+
 	// http serv handle exit signal
 	go func() {
 		afterStartHTTPOk() // after http start ok, then do something
