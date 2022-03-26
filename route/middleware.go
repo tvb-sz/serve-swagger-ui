@@ -2,6 +2,8 @@ package route
 
 import (
 	"github.com/gin-gonic/gin"
+	"github.com/tvb-sz/serve-swagger-ui/app/service"
+	"github.com/tvb-sz/serve-swagger-ui/conf"
 	"github.com/tvb-sz/serve-swagger-ui/render"
 	"net/http"
 )
@@ -12,4 +14,40 @@ import (
 func notRoute(ctx *gin.Context) {
 	ctx.JSON(http.StatusNotFound, render.H(http.StatusNotFound, http.StatusText(http.StatusNotFound), ""))
 	return
+}
+
+// tryAuthenticate try to authenticate request and set safe flag value to ctx
+func tryAuthenticate(ctx *gin.Context) {
+	if conf.Config.ShouldLogin {
+		token := service.OauthService.CheckAuthorization(ctx)
+		ctx.Set("token", token) // set token anyway. Does not check for login logic
+	}
+	ctx.Next()
+}
+
+// authenticate login status
+func authenticate(ctx *gin.Context) {
+	if conf.Config.ShouldLogin {
+		if tokenInter, exist := ctx.Get("token"); exist {
+			if token, ok := tokenInter.(service.Token); ok && token.Authenticated {
+				ctx.Next()
+			}
+		}
+		ctx.Redirect(http.StatusFound, "/")
+		ctx.Abort()
+	}
+	ctx.Next()
+}
+
+// redirectIfAuthenticated login status should redirect to index
+func redirectIfAuthenticated(ctx *gin.Context) {
+	if conf.Config.ShouldLogin {
+		if tokenInter, exist := ctx.Get("token"); exist {
+			if token, ok := tokenInter.(service.Token); ok && token.Authenticated {
+				ctx.Redirect(http.StatusFound, "/") // login status auto redirect to index page
+				ctx.Abort()
+			}
+		}
+	}
+	ctx.Next()
 }

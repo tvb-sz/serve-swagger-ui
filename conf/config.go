@@ -23,6 +23,7 @@ type config struct {
 	Swagger      swagger `json:"swagger"` // swagger json file config
 	Account      account `json:"account"` // google account set
 	ConfigFile   string  `json:"-"`       // record config file path
+	ShouldLogin  bool    `json:"-"`       // record should log in at first
 	EnableGoogle bool    `json:"-"`       // record is set google client_id & client_secret
 }
 
@@ -126,6 +127,7 @@ func Init() {
 
 	// ④ set EnableGoogle value
 	if Config.Google.ClientID != "" && Config.Google.ClientSecret != "" {
+		Config.ShouldLogin = true
 		Config.EnableGoogle = true
 	}
 

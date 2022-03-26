@@ -26,6 +26,12 @@ var (
 	GoogleOauthLoginNotAllow         = errors.New("your account is not allowed to log in")
 )
 
+// Token request token
+type Token struct {
+	Email         string `json:"email"`
+	Authenticated bool   `json:"authenticated"`
+}
+
 // JwtToken jwt token struct
 type JwtToken struct {
 	Sub string `json:"sub"` // JWT subject, just use oauth email, such as google email address
@@ -97,11 +103,24 @@ func (o *oauthService) GoogleCallback(ctx *gin.Context) error {
 	if err != nil {
 		return GoogleOauthLoginFailed
 	}
+	o.SetCookie(ctx, jwt)
+
+	return nil
+}
+
+// SetCookie set cookie
+func (o *oauthService) SetCookie(ctx *gin.Context, jwt string) {
 	host, _ := url.Parse(conf.Config.Server.BaseURL)
 	expire := int(conf.Config.Server.JwtExpiredTime)
 	ctx.SetSameSite(http.SameSiteLaxMode) // set cookie sameSite lax model
 	ctx.SetCookie(define.AuthCookieName, jwt, expire, "/", host.Host, host.Scheme == "https", true)
-	return nil
+}
+
+// DeleteCookie delete cookie
+func (o *oauthService) DeleteCookie(ctx *gin.Context) {
+	host, _ := url.Parse(conf.Config.Server.BaseURL)
+	ctx.SetSameSite(http.SameSiteLaxMode) // set cookie sameSite lax model
+	ctx.SetCookie(define.AuthCookieName, "deleted", -1, "/", host.Host, host.Scheme == "https", true)
 }
 
 // googleCode2accessToken use oauth code exchange accessToken
@@ -145,23 +164,25 @@ func (o *oauthService) googleAccessToken2Email(accessToken string) (string, erro
 // endregion
 
 // CheckAuthorization check cookie state
-func (o *oauthService) CheckAuthorization(ctx *gin.Context) (token JwtToken, valid bool) {
+func (o *oauthService) CheckAuthorization(ctx *gin.Context) (token Token) {
 	cookie, err := ctx.Cookie(define.AuthCookieName)
 	if err != nil {
-		return token, false
+		return token
 	}
 
-	token, err = o.verifyJwt(cookie)
+	jwtToken, err := o.verifyJwt(cookie)
 	if err != nil {
-		return token, false
+		return token
 	}
 
 	// check account can attempt
-	if !o.canAttempt(token.Sub) {
-		return JwtToken{}, false
+	if !o.canAttempt(jwtToken.Sub) {
+		return token
 	}
 
-	return token, true
+	token.Email = jwtToken.Sub
+	token.Authenticated = true
+	return token
 }
 
 // region base oauth method

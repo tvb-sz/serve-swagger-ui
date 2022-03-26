@@ -9,30 +9,40 @@ import (
 )
 
 func routeSetting() {
-	// serve static file route, do not need to auth
-	// http://domain/static/dist/xxx.css ---> ./stubs/dist/xxx.css
-	router.StaticFS("/static", http.FS(stubs.Static))
-
-	// serve favicon.ico
+	// serve favicon.ico, public accessible
 	router.GET("/favicon.ico", func(ctx *gin.Context) {
 		ctx.Header("Content-Type", "image/x-icon")
 		ctx.String(200, string(stubs.Favicon))
 	})
 
-	// register google oauth route
-	router.GET("/oauth/google", controller.AuthController.LoginUsingGoogle)
-	router.GET("/callback/google", controller.AuthController.CallbackUsingGoogle)
-
 	// register index page, use embed html file property
-	router.SetHTMLTemplate(template.Must(template.ParseFS(stubs.Template, "./*.html")))
-	router.GET("/", controller.IndexController.Index)
-	router.GET("/index", controller.IndexController.Index)
-	router.GET("/index.html", controller.IndexController.Index)
-	router.GET("/index.htm", controller.IndexController.Index)
+	router.Use(tryAuthenticate)
+	{
+		router.SetHTMLTemplate(template.Must(template.ParseFS(stubs.Template, "./*.html")))
+		router.GET("/", controller.IndexController.Index)
+		router.GET("/index", controller.IndexController.Index)
+		router.GET("/index.html", controller.IndexController.Index)
+		router.GET("/index.htm", controller.IndexController.Index)
+	}
 
-	// serve json file
-	router.GET("/json/:path", controller.IndexController.Json)
+	// authenticate, nothing when not need login, or should log in not authenticate redirect to index /
+	router.Use(authenticate)
+	{
+		// serve static file route, do not need to auth
+		// http://domain/static/dist/xxx.css ---> ./stubs/dist/xxx.css
+		router.StaticFS("/static", http.FS(stubs.Static))
 
-	// register detail page, use embed html file property
-	router.GET("/doc/:path", controller.IndexController.Detail)
+		// serve json file
+		router.GET("/json/:path", controller.IndexController.Json)
+
+		// register detail page, use embed html file property
+		router.GET("/doc/:path", controller.IndexController.Detail)
+	}
+
+	// redirect when authenticated or not need login to index /
+	router.Use(redirectIfAuthenticated)
+	{
+		router.GET("/oauth/google", controller.AuthController.LoginUsingGoogle)
+		router.GET("/callback/google", controller.AuthController.CallbackUsingGoogle)
+	}
 }
