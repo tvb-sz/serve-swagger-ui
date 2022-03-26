@@ -23,23 +23,23 @@ func routeSetting() {
 		router.GET("/index", controller.IndexController.Index)
 		router.GET("/index.html", controller.IndexController.Index)
 		router.GET("/index.htm", controller.IndexController.Index)
-	}
 
-	// redirect when authenticated or not need login to index /
-	router.GET("/oauth/google", redirectIfAuthenticated, controller.AuthController.LoginUsingGoogle)
-	router.GET("/callback/google", redirectIfAuthenticated, controller.AuthController.CallbackUsingGoogle)
+		// redirect when authenticated or not need login to index /
+		router.GET("/oauth/google", redirectIfAuthenticated, controller.AuthController.LoginUsingGoogle)
+		router.GET("/callback/google", redirectIfAuthenticated, controller.AuthController.CallbackUsingGoogle)
 
-	// authenticate, nothing when not need login, or should log in not authenticate redirect to index /
-	router.Use(authenticate)
-	{
-		// serve static file route, do not need to auth
-		// http://domain/static/dist/xxx.css ---> ./stubs/dist/xxx.css
-		router.StaticFS("/static", http.FS(stubs.Static))
+		// authenticate, nothing when not need login, or should log in not authenticate redirect to index /
+		router.Use(authenticate)
+		{
+			// serve static file route, do not need to auth
+			// http://domain/static/dist/xxx.css ---> ./stubs/dist/xxx.css
+			router.StaticFS("/static", http.FS(stubs.Static))
 
-		// serve json file
-		router.GET("/json/:path", controller.IndexController.Json)
+			// serve json file
+			router.GET("/json/:path", controller.IndexController.Json)
 
-		// register detail page, use embed html file property
-		router.GET("/doc/:path", controller.IndexController.Detail)
+			// register detail page, use embed html file property
+			router.GET("/doc/:path", controller.IndexController.Detail)
+		}
 	}
 }
