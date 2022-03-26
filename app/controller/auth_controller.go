@@ -22,3 +22,9 @@ func (s *authController) CallbackUsingGoogle(ctx *gin.Context) {
 	}
 	ctx.Redirect(http.StatusFound, "/")
 }
+
+// Logout exit logout
+func (s *authController) Logout(ctx *gin.Context) {
+	service.OauthService.DeleteCookie(ctx)
+	ctx.Redirect(http.StatusFound, "/")
+}

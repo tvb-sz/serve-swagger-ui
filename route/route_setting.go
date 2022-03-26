@@ -40,6 +40,9 @@ func routeSetting() {
 
 			// register detail page, use embed html file property
 			router.GET("/doc/:path", controller.IndexController.Detail)
+
+			// exit logout
+			router.GET("/logout", redirectIfAuthenticated, controller.AuthController.Logout)
 		}
 	}
 }
