@@ -67,3 +67,13 @@ func Get(key string) interface{} {
 func Del(key string) {
 	client.MemoryCache.Delete(key)
 }
+
+// Pull Get then Del one local memory cache
+func Pull(key string) interface{} {
+	data, ok := client.MemoryCache.Get(key)
+	if ok {
+		client.MemoryCache.Delete(key)
+		return data
+	}
+	return nil
+}

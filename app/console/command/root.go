@@ -38,10 +38,10 @@ func init() {
 	RootCmd.PersistentFlags().StringVar(&conf.Cmd.ConfigFile, "config", "", "Specify a TOML configuration file, default conf.toml")
 	RootCmd.PersistentFlags().StringVar(&conf.Cmd.Host, "host", "", "Specify the host for the web service, default 0.0.0.0")
 	RootCmd.PersistentFlags().IntVar(&conf.Cmd.Port, "port", 0, "Specify the port for the web service, default 9080")
-	RootCmd.PersistentFlags().StringVar(&conf.Cmd.SwaggerPath, "path", "", "Specify the swagger JSON file storage path")
+	RootCmd.PersistentFlags().StringVar(&conf.Cmd.SwaggerPath, "path", "", "Specify the swagger JSON file storage path, default ./")
 	RootCmd.PersistentFlags().StringVar(&conf.Cmd.LogLevel, "log_level", "", "Specify log level, override config file value：debug|info|warn|error|panic|fatal")
 	RootCmd.PersistentFlags().StringVar(&conf.Cmd.LogPath, "log_path", "", "Specify log storage location, override config file value: stderr|stdout|-dir-path-")
-	RootCmd.PersistentFlags().BoolVar(&conf.Cmd.OpenBrowser, "open", false, "Automatically open the browser and show the first doc, only available for public access")
+	RootCmd.PersistentFlags().BoolVar(&conf.Cmd.OpenBrowser, "open", false, "Automatically open the browser and show the first doc")
 }
 
 // Start start the app

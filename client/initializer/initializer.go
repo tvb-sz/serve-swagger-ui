@@ -9,6 +9,7 @@ import "github.com/tvb-sz/serve-swagger-ui/client"
 func Init() {
 	client.Logger = iniLogger()            // Initialize the logger, which needs to be executed first
 	client.MemoryCache = initMemoryCache() // Initialize the memory cache
+	client.Guzzle = initGuzzle()           // init common http client
 }
 
 // endregion

@@ -3,6 +3,7 @@ package conf
 import (
 	"github.com/tvb-sz/serve-swagger-ui/define"
 	"github.com/tvb-sz/serve-swagger-ui/utils/cfg"
+	"net/url"
 	"strings"
 )
 
@@ -39,13 +40,22 @@ type cmdConfig struct {
 // parseAfterLoad Unified processing flow logic after the configuration item is loaded
 func (c config) parseAfterLoad() {
 	// if google oauth is enabled, check needed JwtKey
-	if Config.EnableGoogle && (Config.Server.JwtKey == "" || Config.Server.JwtExpiredTime <= 0) {
-		panic("Enable authentication must be set Server.JwtKey and Server.JwtExpiredTime")
+	if Config.EnableGoogle {
+		if Config.Server.BaseURL == "" {
+			panic("Enable authentication must be set Server.BaseURL")
+		}
+		// try parse baseURL is valid
+		if _, err := url.Parse(Config.Server.BaseURL); err != nil {
+			panic("Server.BaseURL value is invalid")
+		}
+		if Config.Server.JwtKey == "" || Config.Server.JwtExpiredTime <= 0 {
+			panic("Enable authentication must be set Server.JwtKey and Server.JwtExpiredTime")
+		}
 	}
 
-	// swagger path must be set
+	// swagger path must not be empty
 	if Config.Swagger.Path == "" {
-		panic("swagger file located path --path or Swagger.path must be set")
+		panic("swagger file located path --path or Swagger.path must not be empty")
 	}
 
 	// parse BaseURL suffix slash, add corrected slash
@@ -53,6 +63,7 @@ func (c config) parseAfterLoad() {
 	if Config.Server.BaseURL != "" {
 		Config.Server.BaseURL = strings.TrimRight(Config.Server.BaseURL, "/") + "/"
 	}
+
 }
 
 // region 初始化
@@ -108,6 +119,9 @@ func Init() {
 	}
 	if Config.Log.Level == "" {
 		Config.Log.Level = define.DefaultLogLevel
+	}
+	if Config.Swagger.Path == "" {
+		Config.Swagger.Path = define.DefaultPath
 	}
 
 	// ④ set EnableGoogle value

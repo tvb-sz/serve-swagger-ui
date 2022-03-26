@@ -259,6 +259,8 @@ github.com/inconshreveable/mousetrap v1.0.0/go.mod h1:PxqpIevigyE2G7u3NXJIT2ANyt
 github.com/jinzhu/inflection v1.0.0/go.mod h1:h+uFLlag+Qp1Va5pdKtLDYj+kHp5pxUVkryuEj+Srlc=
 github.com/jinzhu/now v1.1.2 h1:eVKgfIdy9b6zbWBMgFpfDPoAMifwSZagU9HmEU6zgiI=
 github.com/jinzhu/now v1.1.2/go.mod h1:d3SSVoowX0Lcu0IBviAWJpolVfI5UJVZZ7cO71lE/z8=
+github.com/jjonline/go-lib-backend/guzzle v0.0.0-20211213024656-c977de9b02d1 h1:C+JoHJqQe7C7AwCKJj2OVGYZ8P8nTB1qTaG4BBpZYr4=
+github.com/jjonline/go-lib-backend/guzzle v0.0.0-20211213024656-c977de9b02d1/go.mod h1:VUDlJWKQJpJyBDPbhAl2YwTglmrNJOhsPTg7c3jmAmo=
 github.com/jjonline/go-lib-backend/logger v0.0.0-20211213024656-c977de9b02d1 h1:UiLBejStc8dwsTfXj5zWkl0bYqnbdD4//00hH5huivA=
 github.com/jjonline/go-lib-backend/logger v0.0.0-20211213024656-c977de9b02d1/go.mod h1:Zhoql429Sjo5nxzYcUqGUUDg06F43CfBg+5M/tqcuPU=
 github.com/jjonline/go-lib-backend/memory v0.0.0-20211213024656-c977de9b02d1 h1:LKdmRT/29OnWueKduLi7e3v/eshP8Lx9HrJr+dlZv9Q=

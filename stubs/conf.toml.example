@@ -68,6 +68,9 @@ Path="./runtime"
 # the full URL using Server.BaseURL splicing base path
 # - if your Server.BaseURL is: http://localhost:9080
 # - then the full callback URL set in Google oauth console is: http://localhost:9080/callback/google
+# google oauth server-side document, see:
+#   -- https://developers.google.com/identity/protocols/oauth2/web-server
+#   -- https://developers.google.com/identity/protocols/oauth2/scopes#oauth2v2
 ClientID=""
 ClientSecret=""
 

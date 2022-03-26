@@ -6,6 +6,7 @@ require (
 	github.com/fsnotify/fsnotify v1.5.1
 	github.com/gin-gonic/gin v1.7.7
 	github.com/go-playground/validator/v10 v10.6.1
+	github.com/jjonline/go-lib-backend/guzzle v0.0.0-20211213024656-c977de9b02d1
 	github.com/jjonline/go-lib-backend/logger v0.0.0-20211213024656-c977de9b02d1
 	github.com/jjonline/go-lib-backend/memory v0.0.0-20211213024656-c977de9b02d1
 	github.com/spf13/cobra v1.3.0

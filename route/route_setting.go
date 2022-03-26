@@ -19,6 +19,10 @@ func routeSetting() {
 		ctx.String(200, string(stubs.Favicon))
 	})
 
+	// register google oauth route
+	router.GET("/oauth/google", controller.AuthController.LoginUsingGoogle)
+	router.GET("/callback/google", controller.AuthController.CallbackUsingGoogle)
+
 	// register index page, use embed html file property
 	router.SetHTMLTemplate(template.Must(template.ParseFS(stubs.Template, "./*.html")))
 	router.GET("/", controller.IndexController.Index)

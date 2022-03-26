@@ -153,15 +153,15 @@ func (s *parseService) StartFileWatcher() {
 
 // isWatchDirChanged check if watch path dir is change
 func (s *parseService) isWatchDirChanged(prev, next []string) bool {
-	if len(prev) != len(next) {
-		return true
-	}
-
 	if (prev == nil) != (next == nil) {
 		return true
 	}
 
-	// this line can ensure the next b[i] never out of index in for...range loop
+	if len(prev) != len(next) {
+		return true
+	}
+
+	// this line can ensure the next[i] never out of index in for...range loop
 	next = next[:len(prev)]
 	for i, v := range prev {
 		if v != next[i] {
@@ -183,7 +183,7 @@ func (s *parseService) collectWatchDir(parent string) []string {
 		return nil
 	})
 
-	// 执行一遍排序
+	// sort string slice
 	sort.Strings(patCollect)
 
 	return patCollect

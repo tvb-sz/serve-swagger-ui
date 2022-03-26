@@ -34,8 +34,8 @@ Flags:
       --host string        Specify the host for the web service, default 0.0.0.0
       --log_level string   Specify log level, override config file value：debug|info|warn|error|panic|fatal
       --log_path string    Specify log storage location, override config file value: stderr|stdout|-dir-path-
-      --open bool          Automatically open the browser and show the first doc, only available for public access
-      --path string        Specify the swagger JSON file storage path
+      --open bool          Automatically open the browser and show the first doc
+      --path string        Specify the swagger JSON file storage path, default ./
       --port int           Specify the port for the web service, default 9080
 ````
 
@@ -116,9 +116,9 @@ use `--path` or `Swagger.Path` Specify the directory path where the swagger JSON
 You can use a subdirectory to group multiple swagger JSON files.
 
 The first-level subdirectory name will be automatically used as a group name
-and those without a first-level subdirectory will be as the use `default` as group name.
+and those without a first-level subdirectory will be use `default` as group name.
 
-**For example:**
+**use `--path=./runtime` as an example:**
 ````
  ├── runtime
  │   ├── Defined
