@@ -40,7 +40,7 @@ func routeSetting() {
 	}
 
 	// redirect when authenticated or not need login to index /
-	router.Use(redirectIfAuthenticated)
+	router.Use(redirectIfAuthenticatedOrPublicAccessible)
 	{
 		router.GET("/oauth/google", controller.AuthController.LoginUsingGoogle)
 		router.GET("/callback/google", controller.AuthController.CallbackUsingGoogle)

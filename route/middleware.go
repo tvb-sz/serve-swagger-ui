@@ -27,27 +27,24 @@ func tryAuthenticate(ctx *gin.Context) {
 
 // authenticate login status
 func authenticate(ctx *gin.Context) {
-	if conf.Config.ShouldLogin {
-		if tokenInter, exist := ctx.Get("token"); exist {
-			if token, ok := tokenInter.(service.Token); ok && token.Authenticated {
-				ctx.Next()
-			}
-		}
+	if conf.Config.ShouldLogin && !service.OauthService.CheckIsLoginUsingToken(ctx) {
+		// need login, reset cookie then redirect to index page
+		service.OauthService.DeleteCookie(ctx)
 		ctx.Redirect(http.StatusFound, "/")
 		ctx.Abort()
+		return
 	}
 	ctx.Next()
 }
 
-// redirectIfAuthenticated login status should redirect to index
-func redirectIfAuthenticated(ctx *gin.Context) {
-	if conf.Config.ShouldLogin {
-		if tokenInter, exist := ctx.Get("token"); exist {
-			if token, ok := tokenInter.(service.Token); ok && token.Authenticated {
-				ctx.Redirect(http.StatusFound, "/") // login status auto redirect to index page
-				ctx.Abort()
-			}
-		}
+// redirectIfAuthenticatedOrPublicAccessible login status should redirect to index, or public accessible
+func redirectIfAuthenticatedOrPublicAccessible(ctx *gin.Context) {
+	if !conf.Config.ShouldLogin || service.OauthService.CheckIsLoginUsingToken(ctx) {
+		// login status auto redirect to index page
+		ctx.Redirect(http.StatusFound, "/")
+		ctx.Abort()
+		return
 	}
+
 	ctx.Next()
 }

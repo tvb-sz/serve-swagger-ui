@@ -185,6 +185,16 @@ func (o *oauthService) CheckAuthorization(ctx *gin.Context) (token Token) {
 	return token
 }
 
+// CheckIsLoginUsingToken check login status helper
+func (o *oauthService) CheckIsLoginUsingToken(ctx *gin.Context) bool {
+	if tokenInter, exist := ctx.Get("token"); exist {
+		if token, ok := tokenInter.(Token); ok && token.Authenticated {
+			return true
+		}
+	}
+	return false
+}
+
 // region base oauth method
 
 // makeGoogleCallback make google callback URL, which query name is redirect_uri
