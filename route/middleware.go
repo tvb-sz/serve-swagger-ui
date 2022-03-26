@@ -37,8 +37,8 @@ func authenticate(ctx *gin.Context) {
 	ctx.Next()
 }
 
-// redirectIfAuthenticatedOrPublicAccessible login status should redirect to index, or public accessible
-func redirectIfAuthenticatedOrPublicAccessible(ctx *gin.Context) {
+// redirectIfAuthenticated login status should redirect to index, or public accessible
+func redirectIfAuthenticated(ctx *gin.Context) {
 	if !conf.Config.ShouldLogin || service.OauthService.CheckIsLoginUsingToken(ctx) {
 		// login status auto redirect to index page
 		ctx.Redirect(http.StatusFound, "/")

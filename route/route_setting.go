@@ -25,6 +25,10 @@ func routeSetting() {
 		router.GET("/index.htm", controller.IndexController.Index)
 	}
 
+	// redirect when authenticated or not need login to index /
+	router.GET("/oauth/google", redirectIfAuthenticated, controller.AuthController.LoginUsingGoogle)
+	router.GET("/callback/google", redirectIfAuthenticated, controller.AuthController.CallbackUsingGoogle)
+
 	// authenticate, nothing when not need login, or should log in not authenticate redirect to index /
 	router.Use(authenticate)
 	{
@@ -37,12 +41,5 @@ func routeSetting() {
 
 		// register detail page, use embed html file property
 		router.GET("/doc/:path", controller.IndexController.Detail)
-	}
-
-	// redirect when authenticated or not need login to index /
-	router.Use(redirectIfAuthenticatedOrPublicAccessible)
-	{
-		router.GET("/oauth/google", controller.AuthController.LoginUsingGoogle)
-		router.GET("/callback/google", controller.AuthController.CallbackUsingGoogle)
 	}
 }
