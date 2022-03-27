@@ -15,7 +15,7 @@ var (
 		Use:   "serve-swagger-ui",
 		Short: "serve-swagger-ui service manage",
 		Long: `
-A swagger visual web service that can optionally be authenticated by Google,
+A swagger visual web service that can optionally be authenticated by Google or/and Microsoft account,
 configured using command line parameters or a configuration file.
 The command line parameter value takes precedence and will override the value of the configuration file`,
 		Run: func(cmd *cobra.Command, args []string) {
@@ -44,7 +44,7 @@ func init() {
 	RootCmd.PersistentFlags().BoolVar(&conf.Cmd.OpenBrowser, "open", false, "Automatically open the browser and show the first doc")
 }
 
-// Start start the app
+// Start the app
 func Start() {
 	err := RootCmd.Execute()
 	if err != nil {

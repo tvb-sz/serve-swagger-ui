@@ -6,7 +6,7 @@ import (
 	"github.com/tvb-sz/serve-swagger-ui/stubs"
 )
 
-// init version sub-command
+// init output_conf sub-command
 func init() {
 	RootCmd.AddCommand(&cobra.Command{
 		Use:   "output_conf",
