@@ -3,17 +3,17 @@
 SiteName="serve-swagger-ui"
 
 # Set server bind domain base URL
-# If you use oauth login, please set it correctly
+# If enable oauth login, please set it correctly
 BaseURL="http://localhost:9080"
 
 # set jwt encryption key, any character 8 to 16 characters long
 # used for frontend authentication cookie encryption key
-# must be set when enable oauth login
+# If enable oauth login, please set it correctly
 JwtKey=""
 
 # set the expiration time of the oauth login
 # please set a number in seconds, default one year
-# must be set when enable oauth login
+# If enable oauth login, please set it correctly
 JwtExpiredTime=31536000
 
 # bind host ip
