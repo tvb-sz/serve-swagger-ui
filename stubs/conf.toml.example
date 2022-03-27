@@ -71,6 +71,7 @@ Path="./runtime"
 # google oauth server-side document, see:
 #   -- https://developers.google.com/identity/protocols/oauth2/web-server
 #   -- https://developers.google.com/identity/protocols/oauth2/scopes#oauth2v2
+# If both ClientID and ClientSecret are set then sign in with google will be enabled
 ClientID=""
 ClientSecret=""
 
@@ -85,6 +86,7 @@ ClientSecret=""
 #   -- https://docs.microsoft.com/en-us/graph/auth-v2-user#authorization-request
 #   -- https://docs.microsoft.com/en-us/graph/auth-v2-user#3-get-a-token
 #   -- https://docs.microsoft.com/en-us/graph/auth-v2-user#4-use-the-access-token-to-call-microsoft-graph
+# If both ClientID and ClientSecret and Tenant are set then sign in with microsoft will be enabled
 ClientID=""
 ClientSecret=""
 # optional value IS: common \ organizations \ consumers
