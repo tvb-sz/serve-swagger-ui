@@ -19,6 +19,7 @@ func (s *authController) LoginUsingGoogle(ctx *gin.Context) {
 func (s *authController) CallbackUsingGoogle(ctx *gin.Context) {
 	if err := service.OauthService.GoogleCallback(ctx); err != nil {
 		render.HtmlFail(ctx, err)
+		return
 	}
 	ctx.Redirect(http.StatusFound, "/")
 }
@@ -32,6 +33,7 @@ func (s *authController) LoginUsingMicrosoft(ctx *gin.Context) {
 func (s *authController) CallbackUsingMicrosoft(ctx *gin.Context) {
 	if err := service.OauthService.MicrosoftCallback(ctx); err != nil {
 		render.HtmlFail(ctx, err)
+		return
 	}
 	ctx.Redirect(http.StatusFound, "/")
 }

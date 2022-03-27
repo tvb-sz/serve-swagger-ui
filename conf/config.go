@@ -56,11 +56,6 @@ func (c config) parseAfterLoad() {
 		}
 	}
 
-	// swagger path must not be empty
-	if Config.Swagger.Path == "" {
-		panic("swagger file located path --path or Swagger.path must not be empty")
-	}
-
 	// parse BaseURL suffix slash, add corrected slash
 	// Make sure the config ends up being slashed with or without a trailing slash
 	if Config.Server.BaseURL != "" {
