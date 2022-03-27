@@ -17,14 +17,16 @@ var (
 
 // config 项目配置上层结构
 type config struct {
-	Server       server  `json:"server"`  // server config
-	Log          log     `json:"log"`     // log config
-	Google       google  `json:"google"`  // google oauth config
-	Swagger      swagger `json:"swagger"` // swagger json file config
-	Account      account `json:"account"` // google account set
-	ConfigFile   string  `json:"-"`       // record config file path
-	ShouldLogin  bool    `json:"-"`       // record should log in at first
-	EnableGoogle bool    `json:"-"`       // record is set google client_id & client_secret
+	Server          server    `json:"server"`    // server config
+	Log             log       `json:"log"`       // log config
+	Google          google    `json:"google"`    // google oauth config
+	Microsoft       microsoft `json:"microsoft"` // microsoft oauth config
+	Swagger         swagger   `json:"swagger"`   // swagger json file config
+	Account         account   `json:"account"`   // google account set
+	ConfigFile      string    `json:"-"`         // record config file path
+	ShouldLogin     bool      `json:"-"`         // record should log in at first
+	EnableGoogle    bool      `json:"-"`         // record is set google enable
+	EnableMicrosoft bool      `json:"-"`         // record is set microsoft enable
 }
 
 // cmdConfig command line args
@@ -40,8 +42,8 @@ type cmdConfig struct {
 
 // parseAfterLoad Unified processing flow logic after the configuration item is loaded
 func (c config) parseAfterLoad() {
-	// if google oauth is enabled, check needed JwtKey
-	if Config.EnableGoogle {
+	// if google or microsoft oauth is enabled, check needed JwtKey
+	if Config.EnableGoogle || Config.EnableMicrosoft {
 		if Config.Server.BaseURL == "" {
 			panic("Enable authentication must be set Server.BaseURL")
 		}
@@ -129,6 +131,12 @@ func Init() {
 	if Config.Google.ClientID != "" && Config.Google.ClientSecret != "" {
 		Config.ShouldLogin = true
 		Config.EnableGoogle = true
+	}
+
+	// ⑤ set EnableMicrosoft value
+	if Config.Microsoft.ClientID != "" && Config.Microsoft.ClientSecret != "" && Config.Microsoft.Tenant != "" {
+		Config.ShouldLogin = true
+		Config.EnableMicrosoft = true
 	}
 
 	// 配置加载并解析映射成功后统一处理逻辑：譬如Url统一处理后缀斜杠

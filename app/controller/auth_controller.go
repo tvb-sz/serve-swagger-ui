@@ -23,6 +23,19 @@ func (s *authController) CallbackUsingGoogle(ctx *gin.Context) {
 	ctx.Redirect(http.StatusFound, "/")
 }
 
+// LoginUsingMicrosoft to Microsoft oAuth login
+func (s *authController) LoginUsingMicrosoft(ctx *gin.Context) {
+	ctx.Redirect(http.StatusFound, service.OauthService.MicrosoftRedirectURL(ctx))
+}
+
+// CallbackUsingMicrosoft Microsoft oAuth login callback
+func (s *authController) CallbackUsingMicrosoft(ctx *gin.Context) {
+	if err := service.OauthService.MicrosoftCallback(ctx); err != nil {
+		render.HtmlFail(ctx, err)
+	}
+	ctx.Redirect(http.StatusFound, "/")
+}
+
 // Logout exit logout
 func (s *authController) Logout(ctx *gin.Context) {
 	service.OauthService.DeleteCookie(ctx)

@@ -41,12 +41,38 @@ func HtmlFail(ctx *gin.Context, err error) {
 	html := `<!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>%s</title>
+<meta charset="UTF-8">
+<title>%s</title>
 </head>
+<style>
+html{line-height:1.15;-webkit-text-size-adjust:100%%}
+body {
+	font-family: 'Nunito', sans-serif;
+	padding: 0;
+	margin: 0;
+}
+a {
+	text-decoration:underline;
+	color: #d2779f;
+}
+.app {
+	display: flex;
+	position: relative;
+	align-items: center;
+	min-height: 100vh;
+	justify-content: center;
+}
+.content p {
+	color: #a0aec0;
+	text-align: center;
+}
+</style>
 <body>
 <div class="app">
-<p>%s</p>
+	<div class="content">
+		<p>%s</p>
+		<p><a href="/">Back to Home</a></p>
+	</div>
 </div>
 </body>
 </html>`

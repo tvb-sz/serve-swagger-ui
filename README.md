@@ -1,11 +1,10 @@
 # serve-swagger-ui
 
 A swagger-ui server implemented in go language,
-Optional support for Google oAuth login authentication.
+Optional support for Google and Microsoft oAuth login authentication.
 
-After enabling Google oAuth login,
-you can set the domain of accounts that are allowed to view,
-or specify exactly which accounts can be used
+After enabling Google or Microsoft oAuth login,
+you can set the email or email domain to require authorization to browse documents
 
 ## 1、Install
 
@@ -69,7 +68,7 @@ Command line parameters take precedence, configuration file related values will 
 
 ## 3、Publicly accessible
 
-only use command line arguments or do not set config file of section `[Google]`
+only use command line arguments or do not set config file of section `[Google]` and `[Microsoft]`
 
 ## 4、Authenticate with Google oAuth Login
 
@@ -87,6 +86,9 @@ edit your `.toml` suffix config file, see: [2.2、TOML config file](#22toml-conf
 2. set `Server.JwtKey` which is the JWT encryption key used to authenticate the cookie, any character 8 to 16 characters long
 3. set `Server.JwtExpiredTime` which is Authorization cookie validity period, how many seconds after the token is issued
 4. set `Google.ClientID` and `Google.ClientSecret` obtained in the first step
+
+App information sample
+![app](./docs/google.png)
 
 #### step3、set callback URL in Google console
 
@@ -107,7 +109,45 @@ such as `webmaster@tvb.com`, then `webmaster@tvb.com` full match email address c
 
 > You can set multiple email address, so you need to use an array of square brackets
 
-## 5、Serve multiple swagger JSON files
+## 5、Authenticate with Microsoft oAuth Login
+
+#### step1、create Microsoft oauth web application
+
+1. prepare your Microsoft Azure account then enter [App registrations](https://portal.azure.com/?l=en.en-us#blade/Microsoft_AAD_IAM/ActiveDirectoryMenuBlade/RegisteredApps)
+2. Click `New Registration` to register your microsoft oAuth login app
+3. back up to [App registrations](https://portal.azure.com/?l=en.en-us#blade/Microsoft_AAD_IAM/ActiveDirectoryMenuBlade/RegisteredApps) you will see your oAuth app item
+4. click your app name will enter app information page, then you can see all config information
+5. after clicking `Endpoints`, a block will pop up on the right, and you can see your `tenant` value
+6. Click the hyperlink behind `Client credentials` and create a new `client_secret` after entering
+
+#### step2、set config
+
+edit your `.toml` suffix config file, see: [2.2、TOML config file](#22toml-config-file)
+
+1. set `Server.BaseURL` which is your server bind domain base URL, such as `https://swagger.tvb.com/`
+2. set `Server.JwtKey` which is the JWT encryption key used to authenticate the cookie, any character 8 to 16 characters long
+3. set `Server.JwtExpiredTime` which is Authorization cookie validity period, how many seconds after the token is issued
+4. set `Microsoft.ClientID`、`Microsoft.ClientSecret`、`Microsoft.Tenant`obtained in the first step
+
+App information sample
+![app](./docs/microsoft.png)
+
+Get your tenant value sample
+![app](./docs/tenant.png)
+
+#### step3、set callback URL in Microsoft console
+
+Click the hyperlink behind `Redirect URIs` and `Add a platform` for `Web`
+
+If it has been added, click `Add URI` to enter the callback URL
+
+The callback URL splicing format is: `Server.BaseURL` + `callback/microsoft`,  such as `https://swagger.tvb.com/callback/microsoft`
+
+#### step4、set allowed login email address or email address domain
+
+Refer to the description of `Authenticate with Google oAuth Login` above
+
+## 6、Serve multiple swagger JSON files
 
 > Thanks to [fsnotify](https://github.com/fsnotify/fsnotify), adding or removing swagger json file does not require restarting the process
 

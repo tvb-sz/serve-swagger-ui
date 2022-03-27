@@ -18,10 +18,7 @@ func notRoute(ctx *gin.Context) {
 
 // tryAuthenticate try to authenticate request and set safe flag value to ctx
 func tryAuthenticate(ctx *gin.Context) {
-	if conf.Config.ShouldLogin {
-		token := service.OauthService.CheckAuthorization(ctx)
-		ctx.Set("token", token) // set token anyway. Does not check for login logic
-	}
+	ctx.Set("token", service.OauthService.CheckAuthorization(ctx)) // set token anyway. Does not check for login logic
 	ctx.Next()
 }
 

@@ -10,6 +10,7 @@ import (
 	"net/http"
 	"os"
 	"strings"
+	"time"
 )
 
 // indexController index controller
@@ -29,9 +30,14 @@ func (s *indexController) Index(ctx *gin.Context) {
 	}
 
 	// assign values
+	tokenInter, _ := ctx.Get("token")
 	shares := map[string]interface{}{
-		"siteName": conf.Config.Server.SiteName, // siteName
-		"items":    data.Items,                  // swagger file list
+		"siteName":        conf.Config.Server.SiteName, // siteName
+		"items":           data.Items,                  // swagger file list
+		"token":           tokenInter,                  // token structure
+		"enableGoogle":    conf.Config.EnableGoogle,    // check if enable google oauth
+		"enableMicrosoft": conf.Config.EnableMicrosoft, // check if enable microsoft oauth
+		"random":          time.Now().Unix(),           // to redirect random param
 	}
 	ctx.HTML(http.StatusOK, "list.html", shares)
 }

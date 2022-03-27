@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"errors"
+	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/jjonline/go-lib-backend/guzzle"
 	"github.com/jjonline/go-lib-backend/logger"
@@ -22,14 +23,16 @@ var signer jose.Signer
 
 var (
 	AuthorizationHasExpiredOrInvalid = errors.New("authorization has expired or invalid")
-	GoogleOauthLoginFailed           = errors.New("google oauth login failed")
-	GoogleOauthLoginNotAllow         = errors.New("your account is not allowed to log in")
+	AuthorizationParamInvalid        = errors.New("callback URL needed params is missing")
+	LoginFailed                      = errors.New("some error occurred, login failed")
+	EmailIsNotAllow                  = errors.New("your email account is not allowed to log in")
 )
 
 // Token request token
 type Token struct {
 	Email         string `json:"email"`
 	Authenticated bool   `json:"authenticated"`
+	ShouldLogin   bool   `json:"should_login"`
 }
 
 // JwtToken jwt token struct
@@ -56,6 +59,31 @@ type googleUserInfo struct {
 	Picture       string `json:"picture"`
 }
 
+// microsoftAccessToken microsoft oauth accessToken structure
+type microsoftAccessToken struct {
+	TokenType    string `json:"token_type"`
+	Scope        string `json:"scope"`
+	ExpiresIn    int    `json:"expires_in"`
+	AccessToken  string `json:"access_token"`
+	RefreshToken string `json:"refresh_token"`
+}
+
+// microsoftUserInfo microsoft oauth user info
+type microsoftUserInfo struct {
+	//OdataContext      string      `json:"@odata.context"`
+	ID string `json:"id"`
+	//BusinessPhones    []string    `json:"businessPhones"`
+	DisplayName       string      `json:"displayName"`
+	GivenName         string      `json:"givenName"`
+	JobTitle          string      `json:"jobTitle"`
+	Mail              interface{} `json:"mail"` // null or a string
+	MobilePhone       string      `json:"mobilePhone"`
+	OfficeLocation    string      `json:"officeLocation"`
+	PreferredLanguage interface{} `json:"preferredLanguage"`
+	Surname           string      `json:"surname"`
+	UserPrincipalName string      `json:"userPrincipalName"` // email
+}
+
 // oauthService oAuth service
 type oauthService struct{}
 
@@ -78,49 +106,34 @@ func (o *oauthService) GoogleCallback(ctx *gin.Context) error {
 	state := ctx.Query("state")
 	code := ctx.Query("code")
 	if code == "" || state == "" || state != o.getState(state) {
-		return GoogleOauthLoginFailed
+		return AuthorizationParamInvalid
 	}
 
 	// ② code exchange accessToken
 	accessToken, err := o.googleCode2accessToken(code)
 	if err != nil {
-		return GoogleOauthLoginFailed
+		return err
 	}
 
 	// ③ accessToken exchange user info
 	email, err := o.googleAccessToken2Email(accessToken)
 	if err != nil {
-		return GoogleOauthLoginFailed
+		return err
 	}
 
 	// ④ check can attempt login
 	if !o.canAttempt(email) {
-		return GoogleOauthLoginNotAllow
+		return EmailIsNotAllow
 	}
 
 	// ⑤ generate JWT then set cookie
 	jwt, err := o.generateJwt(email)
 	if err != nil {
-		return GoogleOauthLoginFailed
+		return LoginFailed
 	}
 	o.SetCookie(ctx, jwt)
 
 	return nil
-}
-
-// SetCookie set cookie
-func (o *oauthService) SetCookie(ctx *gin.Context, jwt string) {
-	host, _ := url.Parse(conf.Config.Server.BaseURL)
-	expire := int(conf.Config.Server.JwtExpiredTime)
-	ctx.SetSameSite(http.SameSiteLaxMode) // set cookie sameSite lax model
-	ctx.SetCookie(define.AuthCookieName, jwt, expire, "/", host.Host, host.Scheme == "https", true)
-}
-
-// DeleteCookie delete cookie
-func (o *oauthService) DeleteCookie(ctx *gin.Context) {
-	host, _ := url.Parse(conf.Config.Server.BaseURL)
-	ctx.SetSameSite(http.SameSiteLaxMode) // set cookie sameSite lax model
-	ctx.SetCookie(define.AuthCookieName, "deleted", -1, "/", host.Host, host.Scheme == "https", true)
 }
 
 // googleCode2accessToken use oauth code exchange accessToken
@@ -163,8 +176,112 @@ func (o *oauthService) googleAccessToken2Email(accessToken string) (string, erro
 
 // endregion
 
+// region microsoft oauth
+
+// MicrosoftRedirectURL get Microsoft oauth login redirect URL
+func (o *oauthService) MicrosoftRedirectURL(ctx *gin.Context) string {
+	param := make(url.Values, 0)
+	param.Set("client_id", conf.Config.Microsoft.ClientID)
+	param.Set("response_type", "code")
+	param.Set("redirect_uri", o.makeMicrosoftCallback())
+	param.Set("scope", "User.Read Mail.Read")
+	param.Set("response_mode", "query")
+	param.Set("state", o.makeState(ctx))
+
+	baseURL := fmt.Sprintf("https://login.microsoftonline.com/%s/oauth2/v2.0/authorize", conf.Config.Microsoft.Tenant)
+	return guzzle.ToQueryURL(baseURL, param)
+}
+
+// MicrosoftCallback handle Microsoft oauth login callback
+func (o *oauthService) MicrosoftCallback(ctx *gin.Context) error {
+	// ① check state remission CSRF
+	state := ctx.Query("state")
+	code := ctx.Query("code")
+	if code == "" || state == "" || state != o.getState(state) {
+		return AuthorizationParamInvalid
+	}
+
+	// ② code exchange accessToken
+	accessToken, err := o.microsoftCode2accessToken(code)
+	if err != nil {
+		return err
+	}
+
+	// ③ accessToken exchange user info
+	email, err := o.microsoftAccessToken2Email(accessToken)
+	if err != nil {
+		return err
+	}
+
+	// ④ check can attempt login
+	if !o.canAttempt(email) {
+		return EmailIsNotAllow
+	}
+
+	// ⑤ generate JWT then set cookie
+	jwt, err := o.generateJwt(email)
+	if err != nil {
+		return LoginFailed
+	}
+	o.SetCookie(ctx, jwt)
+
+	return nil
+}
+
+// microsoftCode2accessToken use oauth code exchange accessToken
+func (o *oauthService) microsoftCode2accessToken(code string) (string, error) {
+	param := make(url.Values, 0)
+	param.Set("client_id", conf.Config.Microsoft.ClientID)
+	param.Set("client_secret", conf.Config.Microsoft.ClientSecret)
+	param.Set("code", code)
+	param.Set("grant_type", "authorization_code")
+	param.Set("redirect_uri", o.makeMicrosoftCallback())
+
+	baseURL := fmt.Sprintf("https://login.microsoftonline.com/%s/oauth2/v2.0/token", conf.Config.Microsoft.Tenant)
+	result, err := client.Guzzle.PostForm(context.TODO(), baseURL, param, nil)
+	if err != nil {
+		return "", err
+	}
+
+	var accessToken = microsoftAccessToken{}
+	if err := json.Unmarshal(result.Body, &accessToken); err != nil {
+		return "", err
+	}
+
+	return accessToken.AccessToken, nil
+}
+
+// microsoftAccessToken2Email use microsoft oAuth accessToken get user info
+func (o *oauthService) microsoftAccessToken2Email(accessToken string) (string, error) {
+	head := make(map[string]string, 0)
+	head["Authorization"] = "Bearer " + accessToken
+
+	result, err := client.Guzzle.Get(context.TODO(), "https://graph.microsoft.com/v1.0/me", nil, head)
+	if err != nil {
+		return "", err
+	}
+
+	var user = microsoftUserInfo{}
+	if err := json.Unmarshal(result.Body, &user); err != nil {
+		return "", err
+	}
+
+	// select email column
+	if user.Mail != nil {
+		return user.Mail.(string), nil
+	}
+	return user.UserPrincipalName, nil
+}
+
+// endregion
+
 // CheckAuthorization check cookie state
 func (o *oauthService) CheckAuthorization(ctx *gin.Context) (token Token) {
+	token.ShouldLogin = conf.Config.ShouldLogin // set should log in
+	if !conf.Config.ShouldLogin {
+		return token
+	}
+
 	cookie, err := ctx.Cookie(define.AuthCookieName)
 	if err != nil {
 		return token
@@ -195,11 +312,31 @@ func (o *oauthService) CheckIsLoginUsingToken(ctx *gin.Context) bool {
 	return false
 }
 
+// SetCookie set cookie
+func (o *oauthService) SetCookie(ctx *gin.Context, jwt string) {
+	host, _ := url.Parse(conf.Config.Server.BaseURL)
+	expire := int(conf.Config.Server.JwtExpiredTime)
+	ctx.SetSameSite(http.SameSiteLaxMode) // set cookie sameSite lax model
+	ctx.SetCookie(define.AuthCookieName, jwt, expire, "/", host.Host, host.Scheme == "https", true)
+}
+
+// DeleteCookie delete cookie
+func (o *oauthService) DeleteCookie(ctx *gin.Context) {
+	host, _ := url.Parse(conf.Config.Server.BaseURL)
+	ctx.SetSameSite(http.SameSiteLaxMode) // set cookie sameSite lax model
+	ctx.SetCookie(define.AuthCookieName, "deleted", -1, "/", host.Host, host.Scheme == "https", true)
+}
+
 // region base oauth method
 
 // makeGoogleCallback make google callback URL, which query name is redirect_uri
 func (o *oauthService) makeGoogleCallback() string {
 	return conf.Config.Server.BaseURL + define.GoogleCallbackRoute
+}
+
+// makeMicrosoftCallback make google callback URL, which query name is redirect_uri
+func (o *oauthService) makeMicrosoftCallback() string {
+	return conf.Config.Server.BaseURL + define.MicrosoftCallbackRoute
 }
 
 // makeState make oauth state random string

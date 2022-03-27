@@ -68,8 +68,26 @@ a:active, a:hover {outline: 0; text-decoration: underline;}
     align-items: center;
     padding: 2px 8px;
     margin: 5px 2px 5px -8px;
-    border-radius: 4px;
     font-weight: bold;
+}
+.header .header_flex .user_info {
+    display: flex;
+    align-items: center;
+    padding: 2px 8px;
+    margin: 5px 0 5px 0;
+}
+.header .header_flex .user_info .info {
+    color: #6e6e6e;
+    font-size: 0.9rem;
+}
+.header .header_flex .user_info .line {
+    font-style: normal;
+    display: inline-block;
+    padding:0 7px;
+    color: #aaaaaa;
+}
+.header .header_flex .user_info a {
+    color: #c7234b;
 }
 .content {
     margin: 40px auto 0 auto;
@@ -129,7 +147,7 @@ a:active, a:hover {outline: 0; text-decoration: underline;}
     right: -185px;
     top : 15px;
     color: #888888;
-    font-size: 0.5rem;
+    font-size: 0.65rem;
 }
 .item .detail_left .detail_line_one {
     height: 1.41rem;
@@ -168,44 +186,102 @@ a:active, a:hover {outline: 0; text-decoration: underline;}
     line-height: 1.38rem;
     overflow: hidden;
 }
+.login_section {
+    margin: 100px auto 0;
+}
+.login_tips {
+    font-size: 2rem;
+    text-align: center;
+    padding: 50px 0;
+}
+.login_btn {
+    display: flex;
+    justify-content: center;
+}
+.login_btn .btn {
+    margin: 0 5px;
+    padding: 3px 10px;
+    line-height:32px;
+    border-radius: 5px;
+    text-indent: 32px;
+    background-size: 32px;
+    background-repeat: no-repeat;
+    background-position: 6px center;
+    text-decoration: none;
+}
+.login_btn .google {
+    background-image: url("/image/google.png");
+    border: 1px solid #1876d1;
+    color: #1876d1;
+}
+.login_btn .microsoft {
+    background-image: url("/image/microsoft.png");
+    border: 1px solid #4caf4f;
+    color: #4caf4f;
+}
 </style>
 <body>
 <div id="app">
     <header class="header">
         <div class="header_flex">
             <div class="logo">{{ .siteName }}</div>
-<!--            <div class="sign">sign-in</div>-->
+            <div class="user_info">
+                {{if and .token.ShouldLogin .token.Authenticated}}
+                    <span class="info">{{.token.Email}}</span>
+                    <i class="line">|</i>
+                    <a href="/logout" title="sign out your login">Sign out</a>
+                {{end}}
+            </div>
         </div>
     </header>
     <div class="content">
+        {{if or (not .token.ShouldLogin) .token.Authenticated}}
+            {{/* don't need login OR need login and have valid cookie */}}
 
-        {{ range $key, $items := .items }}
-        <section class="section">
-            <div class="section_group"><h2>{{$key}}</h2></div>
-            <ul class="items">
-                {{ range $idx, $item := $items }}
-                <li class="item">
-                    <div class="icon">
-                        <a href="/doc/{{$item.Hash}}.html" target="_blank"><span class="bg{{$item.Key}}">{{$item.Icon}}</span></a>
-                    </div>
-                    <div class="detail">
-                        <div class="detail_left">
-                            <div class="detail_line_one">
-                                <h3><a href="/doc/{{$item.Hash}}.html" target="_blank">{{$item.Title}}</a></h3>
-                                <div class="version"><span>v{{$item.Version}}</span></div>
-                                <div class="version"><span>OAS{{$item.OpenVersion}}</span></div>
+            {{ range $key, $items := .items }}
+            <section class="section">
+                <div class="section_group"><h2>{{$key}}</h2></div>
+                <ul class="items">
+                    {{ range $idx, $item := $items }}
+                    <li class="item">
+                        <div class="icon">
+                            <a href="/doc/{{$item.Hash}}.html" target="_blank"><span class="bg{{$item.Key}}">{{$item.Icon}}</span></a>
+                        </div>
+                        <div class="detail">
+                            <div class="detail_left">
+                                <div class="detail_line_one">
+                                    <h3><a href="/doc/{{$item.Hash}}.html" target="_blank">{{$item.Title}}</a></h3>
+                                    <div class="version"><span>v{{$item.Version}}</span></div>
+                                    <div class="version"><span>OAS{{$item.OpenVersion}}</span></div>
+                                </div>
+                                <div class="detail_line_two"><p>{{$item.Desc}}</p></div>
                             </div>
-                            <div class="detail_line_two"><p>{{$item.Desc}}</p></div>
+                            <div class="detail_right">
+                                <span>{{$item.Name}}[{{$item.Email}}]</span>
+                            </div>
                         </div>
-                        <div class="detail_right">
-                            <span>{{$item.Name}}[{{$item.Email}}]</span>
-                        </div>
-                    </div>
-                </li>
-                {{ end }}
-            </ul>
-        </section>
-        {{ end }}
+                    </li>
+                    {{ end }}
+                </ul>
+            </section>
+            {{ end }}
+
+        {{else}}
+
+            {{/* need login and don't have valid cookie, show login button */}}
+            <div class="login_section">
+                <div class="login_tips">Please sign in</div>
+                <div class="login_btn">
+                    {{if .enableGoogle}}
+                        <a href="/oauth/google?rdm={{.random}}" class="btn google">Sign in with Google</a>
+                    {{ end }}
+                    {{if .enableMicrosoft}}
+                        <a href="/oauth/microsoft?rdm={{.random}}" class="btn microsoft">Sign in with Microsoft</a>
+                    {{ end }}
+                </div>
+            </div>
+
+        {{end}}
 
     </div>
 </div>

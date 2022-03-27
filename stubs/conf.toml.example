@@ -74,6 +74,23 @@ Path="./runtime"
 ClientID=""
 ClientSecret=""
 
+[Microsoft]
+# microsoft oAuth login config,
+#   see: https://portal.azure.com/?l=en.en-us#blade/Microsoft_AAD_IAM/ActiveDirectoryMenuBlade/RegisteredApps
+# callback URL base path is: /callback/microsoft
+# the full URL using Server.BaseURL splicing base path
+# - if your Server.BaseURL is: http://localhost:9080
+# - then the full callback URL set in microsoft oauth console is: http://localhost:9080/callback/microsoft
+# microsoft oauth server-side document, see:
+#   -- https://docs.microsoft.com/en-us/graph/auth-v2-user#authorization-request
+#   -- https://docs.microsoft.com/en-us/graph/auth-v2-user#3-get-a-token
+#   -- https://docs.microsoft.com/en-us/graph/auth-v2-user#4-use-the-access-token-to-call-microsoft-graph
+ClientID=""
+ClientSecret=""
+# optional value IS: common \ organizations \ consumers
+# please check your microsoft oAuth app to confirm the value
+Tenant=""
+
 [Account]
 # Set allowed the domain of email addresses
 # for example: Domain=["tvb.com", "tvb.hk"]
