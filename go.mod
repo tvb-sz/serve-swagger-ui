@@ -12,6 +12,7 @@ require (
 	github.com/spf13/cobra v1.3.0
 	github.com/spf13/viper v1.10.1
 	github.com/toqueteos/webbrowser v1.2.0
+	go.uber.org/zap v1.19.1
 	gopkg.in/square/go-jose.v2 v2.6.0
 )
 
@@ -45,7 +46,6 @@ require (
 	go.opentelemetry.io/otel/trace v0.20.0 // indirect
 	go.uber.org/atomic v1.7.0 // indirect
 	go.uber.org/multierr v1.6.0 // indirect
-	go.uber.org/zap v1.19.1 // indirect
 	golang.org/x/crypto v0.0.0-20210817164053-32db794688a5 // indirect
 	golang.org/x/sys v0.0.0-20211210111614-af8b64212486 // indirect
 	golang.org/x/text v0.3.7 // indirect
