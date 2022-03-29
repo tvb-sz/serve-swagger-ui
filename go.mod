@@ -6,13 +6,13 @@ require (
 	github.com/fsnotify/fsnotify v1.5.1
 	github.com/gin-gonic/gin v1.7.7
 	github.com/go-playground/validator/v10 v10.6.1
-	github.com/jjonline/go-lib-backend/guzzle v0.0.0-20211213024656-c977de9b02d1
-	github.com/jjonline/go-lib-backend/logger v0.0.0-20211213024656-c977de9b02d1
-	github.com/jjonline/go-lib-backend/memory v0.0.0-20211213024656-c977de9b02d1
+	github.com/jjonline/go-lib-backend/guzzle v0.0.0-20220329024742-10cc0d7ec41f
+	github.com/jjonline/go-lib-backend/logger v0.0.0-20220329024742-10cc0d7ec41f
+	github.com/jjonline/go-lib-backend/memory v0.0.0-20220329024742-10cc0d7ec41f
 	github.com/spf13/cobra v1.3.0
 	github.com/spf13/viper v1.10.1
 	github.com/toqueteos/webbrowser v1.2.0
-	go.uber.org/zap v1.19.1
+	go.uber.org/zap v1.21.0
 	gopkg.in/square/go-jose.v2 v2.6.0
 )
 
@@ -52,5 +52,5 @@ require (
 	google.golang.org/protobuf v1.27.1 // indirect
 	gopkg.in/ini.v1 v1.66.2 // indirect
 	gopkg.in/yaml.v2 v2.4.0 // indirect
-	gorm.io/gorm v1.21.15 // indirect
+	gorm.io/gorm v1.23.3 // indirect
 )
