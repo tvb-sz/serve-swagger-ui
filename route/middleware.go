@@ -24,6 +24,7 @@ func tryAuthenticate(ctx *gin.Context) {
 
 // authenticate login status
 func authenticate(ctx *gin.Context) {
+	ctx.Header("Cache-Control", "public, max-age=1800")
 	if conf.Config.ShouldLogin && !service.OauthService.CheckIsLoginUsingToken(ctx) {
 		// need login, reset cookie then redirect to index page
 		service.OauthService.DeleteCookie(ctx)
