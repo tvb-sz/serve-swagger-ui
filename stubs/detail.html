@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>serve-swagger-ui</title>
+    <title>{{ .siteName }}</title>
     <link rel="stylesheet" type="text/css" href="/static/dist/swagger-ui.css"/>
     <link rel="icon" type="image/png" href="/static/dist/favicon-32x32.png" sizes="32x32"/>
     <link rel="icon" type="image/png" href="/static/dist/favicon-16x16.png" sizes="16x16"/>
@@ -35,7 +35,7 @@
     window.onload = function () {
         // Begin Swagger UI call region
         const ui = SwaggerUIBundle({
-            url: "{{ . }}",
+            url: "{{ .url }}",
             dom_id: '#swagger-ui',
             deepLinking: true,
             tryItOutEnabled: false,

@@ -54,7 +54,23 @@ func (s *indexController) Detail(ctx *gin.Context) {
 		render.HtmlFail(ctx, SwaggerFileNotExist)
 		return
 	}
-	ctx.HTML(http.StatusOK, "detail.html", "/json/"+hash+".json")
+
+	// get swagger title
+	detailTitle := conf.Config.Server.SiteName
+	for _, items := range data.Items {
+		for _, item := range items {
+			if item.Hash == hash {
+				detailTitle = item.Title + " - " + conf.Config.Server.SiteName
+				break
+			}
+		}
+	}
+
+	share := map[string]string{
+		"url":      "/json/" + hash + ".json",
+		"siteName": detailTitle,
+	}
+	ctx.HTML(http.StatusOK, "detail.html", share)
 }
 
 // Json serve JSON file
