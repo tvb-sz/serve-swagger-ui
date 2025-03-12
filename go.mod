@@ -5,12 +5,12 @@ go 1.20
 require (
 	github.com/fsnotify/fsnotify v1.8.0
 	github.com/gin-gonic/gin v1.10.0
-	github.com/go-jose/go-jose/v3 v3.0.3
+	github.com/go-jose/go-jose/v3 v3.0.4
 	github.com/go-playground/validator/v10 v10.20.0
-	github.com/jjonline/go-lib-backend/guzzle v0.0.0-20241031033532-7e434bfd9efa
-	github.com/jjonline/go-lib-backend/logger v0.0.0-20241031033532-7e434bfd9efa
-	github.com/jjonline/go-lib-backend/memory v0.0.0-20241031033532-7e434bfd9efa
-	github.com/spf13/cobra v1.8.1
+	github.com/jjonline/go-lib-backend/guzzle v0.0.0-20250202041011-85e59b55177d
+	github.com/jjonline/go-lib-backend/logger v0.0.0-20250202041011-85e59b55177d
+	github.com/jjonline/go-lib-backend/memory v0.0.0-20250202041011-85e59b55177d
+	github.com/spf13/cobra v1.9.1
 	github.com/spf13/viper v1.19.0
 	github.com/toqueteos/webbrowser v1.2.0
 	go.uber.org/zap v1.27.0
@@ -46,7 +46,7 @@ require (
 	github.com/sourcegraph/conc v0.3.0 // indirect
 	github.com/spf13/afero v1.11.0 // indirect
 	github.com/spf13/cast v1.6.0 // indirect
-	github.com/spf13/pflag v1.0.5 // indirect
+	github.com/spf13/pflag v1.0.6 // indirect
 	github.com/subosito/gotenv v1.6.0 // indirect
 	github.com/twitchyliquid64/golang-asm v0.15.1 // indirect
 	github.com/ugorji/go/codec v1.2.12 // indirect
@@ -60,5 +60,5 @@ require (
 	google.golang.org/protobuf v1.34.1 // indirect
 	gopkg.in/ini.v1 v1.67.0 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
-	gorm.io/gorm v1.25.11 // indirect
+	gorm.io/gorm v1.25.12 // indirect
 )
