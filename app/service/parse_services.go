@@ -5,17 +5,18 @@ import (
 	"encoding/hex"
 	"encoding/json"
 	"fmt"
-	"github.com/fsnotify/fsnotify"
-	"github.com/tvb-sz/serve-swagger-ui/client"
-	"github.com/tvb-sz/serve-swagger-ui/conf"
-	"github.com/tvb-sz/serve-swagger-ui/define"
-	"github.com/tvb-sz/serve-swagger-ui/utils/memory"
 	"io/fs"
 	"math/rand"
 	"os"
 	"path/filepath"
 	"sort"
 	"strings"
+
+	"github.com/fsnotify/fsnotify"
+	"github.com/tvb-sz/serve-swagger-ui/client"
+	"github.com/tvb-sz/serve-swagger-ui/conf"
+	"github.com/tvb-sz/serve-swagger-ui/define"
+	"github.com/tvb-sz/serve-swagger-ui/utils/memory"
 )
 
 // watch path list
@@ -132,7 +133,7 @@ func (s *parseService) StartFileWatcher() {
 		select {
 		case event, ok := <-watcher.Events:
 			if ok {
-				client.Logger.Infof("recognize %s changed, auto reread", event.Name)
+				client.Logger.Info("recognize %s changed, auto reread", "name", event.Name)
 				// check watch path is changed or not
 				newWatchPath := s.collectWatchDir(conf.Config.Swagger.Path)
 				if s.isWatchDirChanged(watchPath, newWatchPath) {
@@ -205,7 +206,7 @@ func (s *parseService) parse(path string) (Data, error) {
 	path = strings.TrimRight(path, "/")
 	dir, err := os.ReadDir(path)
 	if err != nil {
-		client.Logger.Errorf("open swagger json file path %s occur error: %s", path, err.Error())
+		client.Logger.Error("open swagger json file path %s occur error: %s", "path", path, "errMsg", err.Error())
 		return Data{}, err
 	}
 
@@ -272,13 +273,13 @@ func (s *parseService) parseSwagger(path string) (res Swagger, err error) {
 	var stream []byte
 	stream, err = os.ReadFile(path)
 	if err != nil {
-		client.Logger.Errorf("open swagger json file %s occur error: %s", path, err.Error())
+		client.Logger.Error("open swagger json file %s occur error: %s", "path", path, "errMsg", err.Error())
 		return res, err
 	}
 
 	err = json.Unmarshal(stream, &swg)
 	if err != nil {
-		client.Logger.Errorf("parse swagger json file %s occur error: %s", path, err.Error())
+		client.Logger.Error("parse swagger json file %s occur error: %s", "path", path, "errMsg", err.Error())
 		return res, err
 	}
 

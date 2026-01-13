@@ -3,8 +3,10 @@ package render
 import (
 	"encoding/json"
 	"fmt"
+
 	"github.com/go-playground/validator/v10"
-	"github.com/jjonline/go-lib-backend/logger"
+	"github.com/tvb-sz/serve-swagger-ui/client"
+
 	"net/http"
 	"strconv"
 	"strings"
@@ -87,14 +89,12 @@ func LogErr(err error, mark string, isAlert bool) {
 
 // LogErrWithGin log error
 func LogErrWithGin(ctx *gin.Context, err error, isAlert bool) {
-	logger.GinLogHttpFail(ctx, err)
+	client.Logger.GetSlogLogger().ErrorContext(ctx, "errorMsg", err)
 }
 
 // translateError Default wrong translation
 func translateError(err error) E {
 	switch e := err.(type) {
-	case *validator.InvalidValidationError:
-		return ErrDefineWithMsg.Wrap(err, "内部错误：参数绑定条件语法错误") // 需要修改参数结构体的tag为binding条件
 	case validator.ValidationErrors:
 		return ErrDefineWithMsg.Wrap(err, "参数错误：参数值未满足限定条件")
 	case *json.UnmarshalTypeError:

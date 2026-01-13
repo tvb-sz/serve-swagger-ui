@@ -5,18 +5,19 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"net/http"
+	"net/url"
+	"strconv"
+	"strings"
+	"time"
+
 	"github.com/gin-gonic/gin"
 	"github.com/go-jose/go-jose/v3"
 	"github.com/jjonline/go-lib-backend/guzzle"
-	"github.com/jjonline/go-lib-backend/logger"
 	"github.com/tvb-sz/serve-swagger-ui/client"
 	"github.com/tvb-sz/serve-swagger-ui/conf"
 	"github.com/tvb-sz/serve-swagger-ui/define"
 	"github.com/tvb-sz/serve-swagger-ui/utils/memory"
-	"net/http"
-	"net/url"
-	"strings"
-	"time"
 )
 
 var signer jose.Signer
@@ -341,7 +342,7 @@ func (o *oauthService) makeMicrosoftCallback() string {
 
 // makeState make oauth state random string
 func (o *oauthService) makeState(ctx *gin.Context) string {
-	requestId := logger.GetRequestID(ctx)
+	requestId := strconv.FormatInt(time.Now().UnixNano(), 10)
 	_ = memory.Set(define.GoogleOauthStateCachePrefixKey+requestId, requestId, 5*time.Minute)
 	return requestId
 }
